@@ -1,0 +1,242 @@
+/*
+
+
+When an interact event happens, the highlight MUST always dissapear. 
+one of two events occur:
+-the object can no longer be interacted with, 
+-the Object can be interacted with again. 
+
+
+Objects will disconnect from Interact during the middle of talking. They will still be in the array, and highlighted, but will not be able to receive the events. 
+if the object is destroyed (especially while being or after being interacted with), it must be destroyed or otherwise set to null, for cleanup.
+
+*/
+class InteractTestPleaseDelete : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, "InteractEvent", this.OnInteract);
+    }
+    function OnInteract(event : InteractEvent)
+    {
+        Trace("Try to spawn a text bubble object!");
+    }
+}
+
+class Interactible : ZilchComponent
+{
+    [Property]
+    var InteractibleSizeScalar : Real = 1.5;
+
+    function Initialize(init : CogInitializer)
+    {
+        if(this.LevelSettings.InteractibleManager == null)
+        {
+            this.LevelSettings.AddComponentByName("InteractibleManager");
+            Trace("ERROR: LEVELSETTINGS DOES NOT HAVE INTERACTIBLEMANAGERCOMPONENT. Adding to component list");
+        }
+        var childRigid = this.Space.CreateAtPosition(Archetype.Find("InteractCollider"), this.Owner.Transform.Translation);
+        //childRigid.AttachTo(this.Owner);
+        childRigid.SphereCollider.Radius *= this.InteractibleSizeScalar;
+        childRigid.InteractRigid.SetParent(this.Owner);
+    }
+}
+class InteractRigid : ZilchComponent
+{
+    var ParentObject : Cog = null;
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+    }
+    function SetParent(newParent : Cog)
+    {
+        this.ParentObject = newParent;
+    }
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController3D != null)
+        {
+            this.LevelSettings.InteractibleManager.AddInteractibleObject(this.ParentObject);
+        }
+    }
+    function OnCollisionEnded(event : CollisionEvent)
+    {
+        if(event.OtherObject.PlayerController3D != null)
+        {
+            this.LevelSettings.InteractibleManager.RemoveInteractibleObject(this.ParentObject);
+        }
+    }
+}
+class InteractibleManager : ZilchComponent
+{
+    var AllInteractibleObjects : Array[Cog] = Array[Cog]();
+    var Player : Cog = null;
+    //var CurrentHighlightedObject : Cog = null;
+    //var Player : Cog = null;
+    [Property]
+    var HighlightArchetype : Archetype = Archetype.Find("HighlightTest");
+    var Highlight : Cog = null;
+    [Property]
+    var HeightOfHighlight : Real = 1.5;
+    [Property]
+    var EaseSpeed : Real = 0.5;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Space, "InteractEvent", this.OnInteractEvent);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        /*
+        Spawn ONE. when array is full
+        Interpolate it's world position every frame to be PROPERTY VECTOR above current highlighted object. 
+
+        DELETE ONE when array is empty. 
+        */
+        
+        //If there are objects in the array and there is no highlight object,
+        if(this.AllInteractibleObjects.Count > 0 && this.Highlight == null)
+        {
+            //grab the position of the closest object 
+            var player = this.FindClosestObjectToPlayer();
+            var pos = player.Transform.Translation;
+            pos += Real3(0, this.HeightOfHighlight, 0);
+            //create one. 
+            this.Highlight = this.Space.CreateAtPosition(this.HighlightArchetype, pos);
+        }
+        
+        //otherwise, If there are no objects in the array and the highlight object exists,
+        else if(this.AllInteractibleObjects.Count <= 0 && this.Highlight != null)
+        {
+            this.Highlight.Destroy();
+        }
+        //otherwise, interpolate the highlight to it's proper position. 
+        else if(this.AllInteractibleObjects.Count > 0)
+        {
+            var player = this.FindClosestObjectToPlayer();
+            var pos = player.Transform.Translation;
+            pos += Real3(0, this.HeightOfHighlight, 0);
+            
+            var grp = Action.Group(this.Owner.Actions as ActionSet);
+            Action.Property(grp, @this.Highlight.HighlightController.Position, pos, this.EaseSpeed, Ease.SinOut);
+        }
+        
+        //remove all of the null objects
+        ValidateCogArray(this.AllInteractibleObjects);
+    }
+    function OnInteractEvent(event : InteractEvent)
+    {
+        //find the nearest object
+        var closest = this.FindClosestObjectToPlayer();
+        //Send an interact event to the owner of the closest object.
+        if(closest != null)
+        {
+            //Create a ScriptEvent
+            var myInteractEvent = new InteractEvent();
+            //Attach all available data
+            
+            //Dispatch it to owner
+            closest.DispatchEvent("InteractEvent", myInteractEvent);
+            
+        }
+
+    }
+    
+    function FindClosestObjectToPlayer() : Cog
+    {
+        var closestCog : Cog = null;
+        var obj2 = this.Player.Transform.Translation;
+        var bestDist = 10000.0;
+        for(var i = 0; i < this.AllInteractibleObjects.Count; ++i)
+        {
+            var obj = this.AllInteractibleObjects.Get(i);
+            var obj1 = obj.Transform.Translation;
+            var dist = Math.Distance(obj1, obj2);
+            
+            if(dist < bestDist)
+            {
+                bestDist = dist;
+                closestCog = obj;
+            }
+        }
+        return closestCog;
+    }
+    
+    function AddInteractibleObject(cog : Cog)
+    {
+        this.AllInteractibleObjects.Add(cog);
+    }
+    function RemoveInteractibleObject(cog : Cog)
+    {
+        for(var i = 0; i < this.AllInteractibleObjects.Count; ++i)
+        {
+            var obj = this.AllInteractibleObjects.Get(i);
+            if(obj == cog)
+            {
+                //if(this.Highlight != null && obj == this.CurrentHighlightedObject)
+                //{
+                //    this.Highlight.Destroy();
+                //}
+                this.AllInteractibleObjects.Set(i, this.AllInteractibleObjects.Get(this.AllInteractibleObjects.LastIndex));
+                this.AllInteractibleObjects.RemoveAt(this.AllInteractibleObjects.LastIndex);
+                return;
+            }
+        }
+    }
+}
+class InteractEvent : Event
+{
+    constructor() : base()
+    {
+    }
+}
+class HighlightController : ZilchComponent
+{
+    [Property]
+    var Height : Real = 1.5;
+    
+    var Position : Real3 = Real3(0,0,0);
+    [Property]
+    var EaseSpeed : Real = 1;
+    [Property]
+    var EaseType : Ease = Ease.Linear;
+    
+    function Initialize(init : CogInitializer)
+    {
+        
+        //It appears below the position it's supposed to.
+        
+        this.Position = this.Owner.Transform.Translation;
+        this.Owner.Transform.Translation += Real3(0, this.Height, 0);
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //Call a function that updates the sequence naturally
+        this.UpdateHeight();
+    }
+    function OnLogicUpdate(event :UpdateEvent)
+    {
+        //Trace("I'm updating");
+        //Trace(this.Position);
+        //Trace(this.Height);
+        this.Owner.Transform.Translation = this.Position + Real3(0, this.Height, 0);
+        
+        this.Owner.Transform.RotateAnglesWorld(Real3(0,Math.ToRadians(40)*event.Dt,0));
+        //this.Owner.Transform.Rotation = Math.ToQuaternion(this.Owner.Transform.EulerAngles);
+    }
+    function UpdateHeight()
+    {
+        //declare an action sequence
+        
+        var height2 = -this.Height;
+        var seq = Action.Sequence(this.Owner.Actions);
+        
+        Action.Property(seq, @this.Height, height2, this.EaseSpeed, this.EaseType);
+        Action.Call(seq, this.UpdateHeight);
+    }
+}

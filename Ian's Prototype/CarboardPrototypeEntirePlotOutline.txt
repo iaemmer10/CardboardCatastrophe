@@ -1,0 +1,127 @@
+Characters' rotation is based on the camera
+Other characters rotate to face the player
+Camera works. 
+Character jumps around the environment.
+
+
+Burn the screen the more the city gets set on fire
+drown the screen the more the city submerges. 
+
+Controller Controls
+
+Player's movement is independent of camera
+Player's movement is based on orientation of camera 
+
+
+//I need an all purpose inventory system
+
+//I need an all purpose menu system
+
+//I need an all purpose input recording system
+work on after next zero is pushed
+
+//I need an all purpose text system
+
+/I need an all purpose conversation system
+can switch between personality mode and pop up bubble mode. 
+works with both Summoner and Cardboard
+responds to interact
+	Say one string on interact
+	Have second and third strings that play with repeated interacts
+	Boolean check : 0: repeats last string after interact
+					1: returns to first string after 3rd interact
+					2: accesses an array of strings to pick randomly.
+Can respond without interact
+	Respond to event
+		response on catching fire
+		response on wet
+		response on being ash
+		respond to being walked up to
+		respond on being near another's response
+	respond on timer
+		Variable time
+		can pick randomly or in order
+		can return to 1st or stop after period of time
+
+Save every kind of object as an archetype.
+
+
+
+
+
+Text System 
+	InteractiveScript generates a new object with "Can be interacted with" rigidbody that produces an "Interactible" message above it and turns off all other interactive objects. 
+	If player presses A button, send out an interact event
+
+
+
+Have a functioning GIT repositiory 
+Smooth camera movement. 
+
+
+
+
+
+IntensityCurves
+		1) Intro
+	2) Hook
+		3) Twist 
+			4) Twist 2
+				5) Finale
+	6) Outro
+			
+THE GAME PLAN 
+Intro	1)Exploring the City
+Hook	2)Friend's Secret Device
+Twist	3)FIRE
+Twist 2	4)WATER
+Finale	5)Getting your own Device
+Outro	6)Celebration OR Destruction of the City
+
+GAME INTRO : EXPLORING THE CITY
+Intro	1) Waking Up/Letter from a friend/leaving the house/ A World of Cardboard; Seeing the City in the distance/ Moving learned (you live on second floor, jump must be learned to get back up stairs)
+Hook	2) Man near the entrance to the track shouting at you/ teaching save at mailboxes / teaching interact with the a button / teaching jumping (if haven't learned)/ teaching pause if you haven't learned/ teaching pause HUd icon meanings when game is paused for first time/ Teaching run if you visit track/ giving shoes if track run is beat (shoes allow A button to run instead of doubletap) 
+Twist	3) entering the city / teaching the quest board / hints of quests to come / Miss Whimsy is on fire / People block off certain routes of the city / tell the fire department about miss whimsy / revisit miss whimsy, get box (if you don't have a box by the time you get to laboratory, he has one there)
+Twist 2	4) given your second side quest (needed to unlock areas) / learning how to finish your first sidequest (jump block tutorial in the highrise apartments) / finishing your first sidequest / talking to the person to move aside
+Finale	5) Entering area with the laboratory/ scripted sequence highlighting the laboratory (Player knows intuitively that this is it, camera focus, explosion, "Thats it!" text bubble, etc) / walking to the laboratory
+Outro	6) /talking to the people around the laboratory / entering the laboratory / walls fall down like good paper mario rooms / room becomes visible.
+
+GAME HOOK: THE FRIEND'S SECRET DEVICE
+Intro	1) THE MACHINE : script sequence, camera, cutscene, electricity running along it, wow factor / friend greets you / friend describes the machine /"Let's turn it on for the first time, shall we?" / if player saved whimsy, friend takes box out of your inventory, else has his own box. / asks you to put box in your inventory and bring it over / put box in inventory /walk over to friend / friend puts it in machine / machine turns on and SCRIPTED SEQUENCE / 3D MODEL of object appears. / "Success!" speech / "Please go find more items to use it on!" speech 
+Hook	2) Player explores city for quests to get new items / does a quest /gets an item or access to a new part of the city / returns to laboratory / turns it real / gets it put back in inventory. / eventually discovers fire station, where firemen are going out to an emergency (they go to an alley that was previously blocked by an npc  stating "area to dangerous")
+Twist	3) Player discovers an area that has been accidentally put on fire. / player helps firemen put out fire / player lauded and given access to room at end of alleyway
+Twist 2	4) this room has the device that is spewing and setting everything on fire
+Finale	5) Player puts out the fire and turns off the device. / obtains device / policemen ask player to return it to your scientist friend to fix
+Outro	6) Player is asked to bring faulty appliance back to friend OR player performs the quest to obtain actual fire and brings that fire back to friend intentionally
+
+GAME TWIST : A CITY AFLAME
+Intro	1) Your friend mistakes you wanting the machine fixed for wanting to put it in the device / turns on the device / lab catches fire / he sends you out of the room to get water 	(if player turns empty bucket real by this point, it can carry CB water as cardboard, this also has to transform) Scientist shouts player to throw CB water on the fire if interacted (instead of turning it real when interacted) If player already has a real bucket full of water, skip to next phase.
+Hook	2) Player must get a water bucket to continue if they have not found one already (The person who gives the hose is not available until CB water has been thrown on the fire) /If player runs out of building without throwing cardboard water, smoke is rising from the building and entering again has the fire has spread to the machine 
+Twist	3) Player throws the CB water onto the fire and it catches fire / "It's not working! The fire is invulnerable" speech / realize you must turn water into real water / If player runs out of building having thrown cardboard water, the entire building is alight from the outside and the inside is an inferno
+Twist 2	4) throw real water on fire, it kills some of it, but not enough / "We'll never put out the fire in time. You need to somehow get access to the city fire hydrant, and bring it here" / if the player runs out of the building having thrown real water, the city block is on fire and the entire laboratory is on fire, although the machine has stayed damp enough from the water to work and not catch fire. 
+Finale	5) Player gets to the fire department, and obtains a fire hose after doing some random quest for the firemen. //Entire city has caught fire by the time you've obtained the hose
+Outro	6) Player races to the laboratory with a hose / witnessing the world crumble around them, the levels have begun deteriorating from the flames (tricky platforming required). 
+
+GAME TWIST 2 : A CITY DROWNING
+Intro	1) The player turns the hose real and begins spraying water through the machine to put out the fire in the building. when player walks outside water is spraying out from behind the hose / firemen ask player to reconnect hose around city and help spray down the fires
+Hook	2) player has to journey around and put out parts of the city with the hose / water begins leaking out of the faucets as player walks up 
+Twist	3) when city is out (at least what the player can get to , firemen lead the way to all remaining areas) / firemen mention something strange at the waterworks plant / water begins gushing out of every pipe, warping the floors of rooms and drowning people and buildings /when player enters waterworks area , script Waterworks facitily exploding
+Twist 2	4) firemen mention that the city sewers have to become unplugged to help flow the water out of the city or the city will dissolve away / player led to the well, platforming tricks over ruined city blocks / player has to obtain rope to enter the well /
+Finale	5) player enters well /  player has to avoid water on the climb down / player has to use fishing hook to pull up the plug (one is down there if the player hasn't obtained it yet) / stormdrain drains away, water flows perioulously  on the way back up (in different ways than before) but is much slower. / player exits well
+Outro	6) player is led to the ocean by the firemen / player discovers water being routed to the ocean / ocean water (still cardboard) is melting apart / script the dock falling into the waves and the beach slowly being eaten apart and tearing at the edges of the city / everyoen in despair / player has to make it back to their scientist friend. 
+
+GAME FINALE : GETTING YOUR OWN DEVICE
+Intro	1) Scientist is found in ruins of old buildint / machine has sunk into the floor / player tells friend about the ocean and the city being eaten apart / friend seclares he has been working on building portable device that can turn everything back to normal / hands players a list of things needed
+Hook	2) player has to journey around city and rescue peices from the scattered edges of the city. (All of these objects are attainable before the city goes to hell, but are still available in seperate areas)
+Twist	3) After player collects all things in a certain chunk of a room, / That block BREAKS OFF and succumbs to the waves, taking everything near it with it;
+Twist 2	4) After player rescues a large chunk of the city, whole CITY BLOCKS (that's rooms, btw) begin tearing off into the waves from weakened water damage
+Finale	5) player brings back all items to the scientist, who has been trapped on one chunk of land still remaining. / players have to platform to get to scientist as areas fall off into the water and the city submerges / scientist's land begins to go under, he throws the blueprints in a place you can get to them / script scientist dying as his land submerges / player gets the blue prints / script the player building the device 
+Outro	6) player learns how to use the device (tutorial) / saves that chunk of the city / an entrance to another part of the city opens up / player has to go rescue every room of the city from destruction, one by one / player makes it all the way back to their house / script the same camera view of the city as they saw when they first walked outside in the beginning / player is prompted to fire the device one last time at the city as a whole, which puts out all fires and water for good
+
+GAME OUTRO :  A CELEBRATION OF YOUR HEROISM / THE END TO A TALE OF DISPAIR
+Intro	1) Device breaks apart "Never again can such a device of evil be used again" speech / player discovers game is not over yet
+Hook	2) player can walk back into city to witness it being repaired by people, meet people brought back to life, and talk to them
+Twist	3) player discovers their scientist friend in a trough of cardboard water, pulls him out of it. / scientist friend sputters back to life / "You did it, you saved the world" speech
+Twist 2	4) You and scientist journey back to the ruins of the laboratory
+Finale	5) Scientist repairs the broken machine. / you put the machine in your inventory
+Outro	6) credits begin playing. 

@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "CPrototype",
+	uint64 LibraryId = 5563639bd114c972,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

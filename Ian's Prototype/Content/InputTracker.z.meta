@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "InputTracker",
+		uint64 ResourceId = 556362a20ab74426,
+	},
+},

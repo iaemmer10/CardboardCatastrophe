@@ -1,0 +1,37 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "HighlightTest",
+	},
+	Archetyped = 
+	{
+		string Name = "556a01a50f1d53db:HighlightTest",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-1.40242, 10.2439, 1.69433],
+		Vec3 Scale = [0.25, 0.25, 0.25],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Model = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = true,
+		string MaterialName = "4de020863e85bb61:DefaultMaterial",
+		string MeshName = "4de0354322b376ae:Sphere",
+		Vec4 Color = [1, 1, 1, 1],
+	},
+	HighlightController = 
+	{
+		float Height = 0.25,
+		float EaseSpeed = 1,
+		Enum EaseType = QuadInOut,
+	},
+},

@@ -1,0 +1,197 @@
+/*
+
+I need custom events for 
+Keyboard
+Mouse 
+Controller 
+
+For the keyboard, I will send out a "KeyEvent"
+    Key events will have "Pressed", "Released", and "Continued" ..bools. 
+
+
+How do I want to use it? 
+Zero.Connect(this.Space, "KeyboardEvents", this.OnKeyboardEvents);
+    function OnKeyboardEvents(event :KeyboardEvent);
+
+
+I need a new, custom event called "KeyboardEvent" that receives stuff 
+*/
+
+
+class InputTracker : ZilchComponent
+{
+    [Property]
+    var ReplayOn : Boolean = false;
+    var Timer : Real = 0.0;
+    
+    var InputSaver : Cog = null;
+    
+    var ArrayOfKeyInputs : Array[KeyInput] = new Array[KeyInput](0);
+
+    function Initialize(init : CogInitializer)
+    {
+        this.Owner.Persistent = true;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(Zero.Keyboard, Events.KeyUp, this.OnKeyUp);
+        Zero.Connect(Zero.Keyboard, Events.KeyDown, this.OnKeyDown);
+        //Zero.Connect(Zero.Keyboard, Events.KeyRepeated, this.OnKeyRepeated);
+        if(this.ReplayOn == false)
+        {
+            Zero.Connect(this.Space, "KeyboardCustom", this.OnKeyboardCustom);
+            this.InputSaver = Zero.ObjectStore.RestoreOrArchetype("Data", "InputSaver", this.Space);
+        }
+        
+        this.AddKeys();
+    }
+    
+    function OnKeyUp(event : KeyboardEvent)
+    {
+        //Create a new instance of KeyboardCustom
+        var myKeyboardEvent = new KeyboardCustom();
+        //Attach data to the new instance of keyboard custom
+        myKeyboardEvent.KeyName = event.Key;
+        myKeyboardEvent.StateChanged = event.State;
+        //Dispatch the event out to SPACE
+        this.Space.DispatchEvent("KeyboardCustom", myKeyboardEvent);
+    }
+    function OnKeyDown(event : KeyboardEvent)
+    {
+        //Create a new instance of KeyboardCustom
+        var myKeyboardEvent = new KeyboardCustom();
+        //Attach data to the new instance of keyboard custom
+        myKeyboardEvent.KeyName = event.Key;
+        myKeyboardEvent.StateChanged = event.State;
+        //Dispatch the event out to SPACE
+        this.Space.DispatchEvent("KeyboardCustom", myKeyboardEvent);
+    }
+    /*
+    function OnKeyRepeated(event : KeyboardEvent)
+    {
+        //Create a new instance of KeyboardCustom
+        var myKeyboardEvent = new KeyboardCustom();
+        //Attach data to the new instance of keyboard custom
+        myKeyboardEvent.KeyName = event.Key;
+        
+        myKeyboardEvent.StateChanged = event.State;
+        //Dispatch the event out to SPACE
+        this.Space.DispatchEvent("KeyboardCustom", myKeyboardEvent);
+    }*/
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Trace("1.05" as Real);
+        
+        this.Timer += event.Dt;
+        if(Key.Pressed(Keys.A))
+        {
+            Trace("A was pressed. Time is: `this.Timer`");
+        }
+        if(Key.Released(Keys.A))
+        {
+            Trace("A was released. Time is: `this.Timer`");
+        }
+        if(Key.Pressed(Keys.Space))
+        {
+            foreach (var keyInput in this.InputSaver.Children)
+            {
+                Trace(keyInput.KeyInput.KeyPress as Keys);
+            }
+            
+        }
+        Key.UpdateKeys();
+    }
+    function OnKeyboardCustom(event : KeyboardCustom)
+    {
+        //I need to change the state of one of the keys
+        
+        //If the key was down,
+        if(event.StateChanged == KeyState.Down)
+        {
+            //Remove the key from off/released array
+            //add key to pressed array
+            Key.ArrayOfReleased.RemoveFirst(event.KeyName);
+            Key.ArrayOfOff.RemoveFirst(event.KeyName);
+            Key.ArrayOfPressed.Add(event.KeyName);
+        }
+        if(event.StateChanged == KeyState.Up)
+        {
+            //remove key from pressed/added array
+            //add key to released array
+            Key.ArrayOfPressed.RemoveFirst(event.KeyName);
+            Key.ArrayOfHeld.RemoveFirst(event.KeyName);
+            Key.ArrayOfReleased.Add(event.KeyName);
+        }
+        
+        //Save the Value of the Change.
+        //var blah : Sprite = new Sprite;
+//Make a new child and attach it to InputSaver, then try again.
+        
+        var newKeyInput = this.Space.Create(Archetype.Find("InputObject"));
+        //Trace(newKeyInput.Name);
+        newKeyInput.Name = "`event.KeyName`,`event.StateChanged`,`this.Timer`";
+        newKeyInput.KeyInput.TimeStamp = this.Timer;
+        newKeyInput.KeyInput.KeyPress = event.KeyName;
+        newKeyInput.KeyInput.StateChanged = event.StateChanged;
+        
+        newKeyInput.AttachTo(this.InputSaver);
+        Zero.ObjectStore.Store("Data", this.InputSaver);
+        
+        Console.WriteLine(newKeyInput.Name);
+        
+        //this.InputSaver.InputSaver.ArrayOfKeyInputs.Add(newKeyInput);
+        
+        //Save to File IO
+        
+        
+        /*
+        How do I want to save the data? 
+            I can add children for EVERY single thing.. 
+            I can add an Array for each type of input,
+                each array carries time, kind of input
+                each kind of input has it's own child class that is created upon receiving the event 
+        
+        How do I export the data? 
+            I create a copy of the replay data 
+        */
+    }
+
+    function AddKeys()
+    {
+        for(var i = 0; i < 174; ++i)
+        {
+            var blah : Keys = i as Keys;
+            Key.ArrayOfOff.Add(blah);
+        }
+    }
+}
+
+class InputSaver : ZilchComponent
+{
+    //[Serialized]
+    //var ArrayOfKeyInputs : Array[KeyInput] = new Array[KeyInput](0);
+}
+
+class KeyInput : ZilchComponent
+{
+    [Property]
+    var TimeStamp : Real = 0.0;
+    [Property]
+    var KeyPress : Integer;
+    [Property]
+    var StateChanged : Integer;
+
+    constructor() : base()
+    {
+    }
+}
+
+class KeyboardCustom : Event
+{
+    var KeyName : Keys;
+    var StateChanged : KeyState;
+    constructor() : base()
+    {
+    }
+}

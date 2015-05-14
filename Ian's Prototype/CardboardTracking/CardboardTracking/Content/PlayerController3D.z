@@ -1,0 +1,86 @@
+class PlayerController3D : ZilchComponent
+{
+    //reference to the camera the player's movement is based on
+    var Cam : Cog = null;
+    //The index of the controller the player's movement is based on.
+    [Property]
+    var GamePadIndex : Integer = 0;
+    //Declare a variable "GameController" which references a plugged in GamePad device that GamePadIndex will refer to
+    var GameController : Gamepad = null;
+
+    function Initialize(init : CogInitializer)
+    {
+        //Find the Gamecontroller
+        this.GameController = Zero.Gamepads.GetGamePad(this.GamePadIndex);
+        //find the camera 
+        this.Cam = this.Space.FindObjectByName("Camera");
+        //Connect to logic update
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //move the character using the swept controller and user input
+        this.Move(event);
+        
+        //If the user tries to jump, call the jump from the swept controller
+        if(Zero.Keyboard.KeyIsDown(Keys.Space) || this.GameController.IsButtonPressed(Buttons.A))
+        {
+            //Trace(this.Owner.SweptController.
+            this.Owner.SweptController.Jump();
+        }
+        //If the player lets go of the jump intentionally, jumpcancel
+        if(this.GameController.IsButtonReleased(Buttons.A))
+        {
+            this.Owner.SweptController.JumpCancel();
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Enter) || Zero.Keyboard.KeyIsPressed(Keys.E) || this.GameController.IsButtonPressed(Buttons.X))
+        {
+            //Create a ScriptEvent
+            var myInteractEvent = new InteractEvent ();
+            //Attach all available data
+            
+            //Dispatch it to space
+            this.Space.DispatchEvent("InteractEvent", myInteractEvent);
+        }
+    }
+
+    function Move(event : UpdateEvent)
+    {
+        //Declare a movement variable to pass to the swept controller
+        var movement : Real3 = Real3(0,0,0);
+        
+        /*//To use basic movement code, use the following linw
+        //movement += Real3(this.GameController.LeftStick.X, 0, -this.GameController.LeftStick.Y);*/
+        
+        //To base movement on the camera, use this line
+        movement += this.Cam.Orientation.WorldForward*this.GameController.LeftStick.Y;
+        movement += this.Cam.Orientation.WorldRight*this.GameController.LeftStick.X;
+        
+        //Keyboard Controls
+        if(Zero.Keyboard.KeyIsDown(Keys.Right))
+        {
+            //movement += Real3(5, 0, 0);
+            movement += this.Cam.Orientation.WorldRight;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Left))
+        {
+            //movement += Real3(-5, 0, 0);
+            movement -= this.Cam.Orientation.WorldRight;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Up))
+        {
+            //movement += Real3(0, 0, -5);
+            movement += this.Cam.Orientation.WorldForward;
+        }
+        if(Zero.Keyboard.KeyIsDown(Keys.Down))
+        {
+            //movement += Real3(0, 0, 5);
+            movement -= this.Cam.Orientation.WorldForward;
+        }
+        
+        //Call the update function of the swept controller
+        this.Owner.SweptController.Update(movement, event.Dt);
+    }
+}

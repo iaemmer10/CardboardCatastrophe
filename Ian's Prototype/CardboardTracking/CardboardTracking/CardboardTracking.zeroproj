@@ -1,0 +1,19 @@
+Cog = 
+{
+	Project = 
+	{
+		string ProjectName = "CardboardTracking",
+		string ProjectOwner = "",
+		string DefaultLevel = "Level",
+		string ProjectSpace = "Space",
+		uint ProjectEngineRevision = 11139,
+	},
+	EditorSettings = 
+	{
+		EditorMode EditorMode = Mode3D,
+		bool ViewCube = true,
+		float ViewCubeViewportSize = 150,
+		ScriptReloadMethod ScriptReloadEditor = ReInitializeObjects,
+		ScriptReloadMethod ScriptReloadGame = PatchObjects,
+	},
+},

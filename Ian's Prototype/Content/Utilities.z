@@ -1,0 +1,99 @@
+/*
+Utilities holds a bunch of useful functions and scripts that should be accessible everywhere. 
+*/
+
+
+
+
+
+//Trace allows iteration speed to be faster by replacing the console.WriteLine with the infinitely superior trace command
+struct Trace
+{
+    constructor(test : any)
+    {
+        Console.WriteLine(test);
+    }
+}
+
+class Key
+{
+    //I have everything on the keyboard, and they each have a state (Pressed, Released, Held, off)
+    //The events change the states here
+    //Everything reads from here. 
+    
+    [Static]
+    var ArrayOfPressed : Array[Keys] =  new Array[Keys](0);
+    [Static]
+    var ArrayOfReleased : Array[Keys] = new Array[Keys](0);
+    [Static]
+    var ArrayOfHeld : Array[Keys] = new Array[Keys](0);
+    [Static]
+    var ArrayOfOff : Array[Keys] = new Array[Keys](0);
+
+    [Static]
+    function Pressed(key : Keys) : Boolean
+    {
+        //Search through the array of pressed objects for something with the name passed in (key)
+        foreach (var pressedkey in Key.ArrayOfPressed)
+        {
+            if(pressedkey == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    [Static]
+    function Released(key: Keys) : Boolean
+    {
+        //Search through the array of pressed objects for something with the name passed in (key)
+        foreach (var releasedkey in Key.ArrayOfReleased)
+        {
+            if(releasedkey == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    [Static]
+    function Held(key: Keys) : Boolean
+    {
+        //Search through the array of pressed objects for something with the name passed in (key)
+        foreach (var heldkey in Key.ArrayOfHeld)
+        {
+            if(heldkey == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    [Static]
+    function Untouched(key: Keys) : Boolean
+    {
+        //Search through the array of pressed objects for something with the name passed in (key)
+        foreach (var untouchedkey in Key.ArrayOfOff)
+        {
+            if(untouchedkey == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    [Static]
+    function UpdateKeys()
+    {
+        for (var i = Key.ArrayOfPressed.LastIndex; i >= 0; --i)
+        {
+            Key.ArrayOfHeld.Add(Key.ArrayOfPressed.Get(i));
+            Key.ArrayOfPressed.Pop();
+        }
+        for (var i = Key.ArrayOfReleased.LastIndex; i >= 0; --i)
+        {
+            Key.ArrayOfOff.Add(Key.ArrayOfReleased.Get(i));
+            Key.ArrayOfReleased.Pop();
+        }
+    }
+}

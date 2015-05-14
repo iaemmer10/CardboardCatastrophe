@@ -1,0 +1,18 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "InputSaver",
+	},
+	Archetyped = 
+	{
+		string Name = "556e7c69a3017752:InputSaver",
+	},
+	InputSaver = 
+	{
+	},
+},

@@ -1,0 +1,21 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "InputObject",
+	},
+	Archetyped = 
+	{
+		string Name = "556f6cd88ee39cb9:InputObject",
+	},
+	KeyInput = 
+	{
+		float TimeStamp = 0,
+		int KeyPress = 0,
+		int StateChanged = 0,
+	},
+},
