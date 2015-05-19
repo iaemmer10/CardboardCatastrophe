@@ -1,0 +1,40 @@
+To DO List
+
+GitHub solving
+Merging Steven and My files
+
+Finishing three character designs
+Maya exporting the three characters
+Writing proper orientation components
+
+
+Sends an interact event properly
+Conversations work
+Inventories work
+Item prompt system, that sends an "item receieved event" and takes away item 
+then start scripting all of the characters
+
+
+
+Moving character
+-Rotation and reflection is based on movement vector
+
+-Work on rotation and reflection with the camera panning off
+-then do it with the camera
+
+
+5 more characters
+interactible icon
+box
+Speech Bubble
+
+
+Come up with some way to prevent players from walking into text bubbles
+
+Things to test:
+Player's preferred camera movement with slighltly slanted cameras
+Player understands which button is action and which is jump
+If Jump and Talk can be mapped to the same button adaquately (A and X and Right trigger/Left Trigger do the same thing)
+Y and B and start and select open menus
+
+ghostly flicker in RU with dualcaster mage

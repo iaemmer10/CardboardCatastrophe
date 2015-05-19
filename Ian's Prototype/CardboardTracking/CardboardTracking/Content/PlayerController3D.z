@@ -82,5 +82,64 @@ class PlayerController3D : ZilchComponent
         
         //Call the update function of the swept controller
         this.Owner.SweptController.Update(movement, event.Dt);
+        this.RotateBasedOnVector(movement);
+    }
+    function RotateBasedOnVector(move : Real3)
+    {
+        move -= Real3(0, move.Y, 0);
+        //Trace(move);
+        //If character is not moving, do nothing. Otherwise,
+        if(move != Real3(0,0,0))
+        {
+            //Trace("IsMoving");
+            //grab the quadrant of the movement
+            var quadrant = this.GetQuadrant(Real2(move.X, -move.Z));
+            
+            //if(quadrant == 3)
+            //{
+                
+                //rotate the player on that vector?
+                //First of all, WHAT. This isn't how you do that.
+                //I need an angle from the unit circle
+                var dist = Math.Distance(move, Real3(0,0,0));
+                //var deltaY = move.;
+                var angleInDegrees = Math.ATan(move.Z / move.X);
+                //Trace(Math.ToDegrees(angleInDegrees));
+                
+                //this.Owner.Transform.Rotation = Math.ToQuaternion(Real3(0, Math.Abs(angleInDegrees), 0));
+            //}
+            
+        }
+    }
+    function GetQuadrant(vec : Real2) : Integer
+    {
+        //1 is top right quadrant
+        //2 is top left quadrant
+        //3 is bottom left quadrant
+        //4 is bottom right quadrant
+        
+        
+        if(vec.X <= 0)
+        {
+            if(vec.Y <= 0)
+            {
+                return 3;
+            }
+            else
+            {
+                return 2;
+            }
+        }
+        else
+        {
+            if(vec.Y <= 0)
+            {
+                return 4;
+            }
+            else
+            {
+                return 1;
+            }
+        }
     }
 }

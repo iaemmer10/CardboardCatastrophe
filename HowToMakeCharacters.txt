@@ -1,0 +1,72 @@
+After the entire object has been cut out,
+
+-MAke sure there are no holes in the model
+--Use the Merge vertices tool to combine vertices
+--Use the append to polygon tool to create polygonal faces whereever the holes are
+
+Apply a defualt texture for export
+-Open Hypershading (Window tab, rendering editors, Hypershader)
+-click "Lambert" in the scrollwheel selection. This will create a new lambert material
+-Middle Mouse click the selction, and drag it onto the object in the scene to attach it
+
+Open the Uv Texture Editor
+-Go to object mode and select the combined model
+-Window tab, Uv Texture Editor
+
+Create the UVs
+-Create UV's Tab, Automatic Mapping tool (check the box)
+-Apply
+
+Export the UV's
+-in the uv texture editor window, select the Polygons tab
+-scroll down to Uv snapshot and select it (it's the last option)
+-make sure your resolution is good (and in line with all of the other objects)
+-change the name and location as you choose (Defaults to images)
+-Save as a tiff
+-hit ok
+
+Edit the texture in photoshop
+-open photoshop
+-Take the background image, rename it to Overlay (this unlcoks it for editing)
+-take the blend type of the layer (the first option in the dropdown menu, should default as "Normal" and set it to screen.this makes black invisible, white visible, and gray work as alpha.
+-Create a new layer BELOW the overlay layer. Use the paintbucket tool (which can be hidden under the gradient tool) to paint the new layer something other than white, gray, or black. (this layer is for visibility)
+-Create a new layer ABOVE the overlay layer to put your object on. 
+-Place a copy of the character or prop image in the spot outlined by the Overlay layer. There will be 4 sides of note. Only put an image in the TWO spots that corrospond to the outfacing object in Maya. 
+-Use the magic wand tool to select the cardboard edges of the character (everything past the black) and delete it.
+-Drag and drop a selection of a Cardboard texture onto another layer, Behind the drawn images. Fill up the screen with it. 
+-Hide the background color layer and the overlay layer.
+-go to file, then Hit "Save" (not save as). Use all the defualt settings (this should save as a PSD - a photoshop file with all layers intact.)
+-Then go to file and hit "Save as"export a JPEG file for use in Maya. The directory of the save should be "Maya -> projects -> default->sourceimages" this will allow it to load in maya.
+
+Minimize or close photoshop and return to maya
+-You may want to only minimize because the textures may not load correctly in maya- you may have mapped the images to the inside faces instead of the outside faces. 
+
+Apply the texture to the object
+-maximize or reopen Maya
+-open Window, rendering editors, Hypershader
+-create a new lambert from the scroll menu
+-double click on the new lambert in the materials list to select it
+-Go to the Attribute editor, where the new lambert material should be highlighted
+-click on the little black and white soccer box next to the "Color" attribute (it should be first on the list). This will create a "Create Render Mode" window
+-Click the "file" option from the scroll menu (should be fourth from top). THIS WILL CLOSE THE CREATE RENDER MODE WINDOW
+-In the attribute editor again, click on the folder icon next to parameter "Image Name" and navigate to the file you want to import.  This will alter the lambert you created in hypershade window to reflect the new texture. 
+-Hold down the middle mouse button to drag the lambert to the object. (If the picture does not display, press 6 on the keyboard to switch to the proper viewing mode)
+
+Check to make sure write textures are showing up
+
+Export the file
+-make sure your object is translated and moved and oriented correclty
+-Go to file, export selection (if there's more than one obejct in the scene)
+-Name the file, then select the drop down FilesOfType menu and choose "FBX export" (it's near the bottom). Navigate to where you want to store it. 
+
+Add the files to Zero Engine
+Drag and drop the FBX file into zero Engine. Select "Physics import - no mesh". 
+drag and drop the png of the texture into zero engine, make sure it is marked as "Texture", not "sprite".
+add a new material, and set the diffuse of the texturediffusecomponent to the png file
+
+
+
+
+
+
+
