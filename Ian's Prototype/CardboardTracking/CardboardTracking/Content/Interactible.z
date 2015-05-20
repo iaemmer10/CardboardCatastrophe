@@ -10,6 +10,21 @@ one of two events occur:
 Objects will disconnect from Interact during the middle of talking. They will still be in the array, and highlighted, but will not be able to receive the events. 
 if the object is destroyed (especially while being or after being interacted with), it must be destroyed or otherwise set to null, for cleanup.
 
+
+When you walk next to an object, display a exclamation mark to the closest object, or a small text bubble nearest the closest character instead. 
+These should be above that object, not have collision, and not extend past them. 
+
+When you press the interact button, You send an interact event to the object closest to you. 
+If that object has not created a text box yet, 
+    then delete the current exclamation/text bubble and create a new instance of Textbox at top of screen. 
+if that object HAS created a text box, then pass on the interact event to the textbox, which should have it's strings and such stored. 
+
+When you walk past a certain distance, send a "Delete self" call to the textbox at the top of the screen. 
+
+
+If a player is within a certain distance, a character can "Shout Out" which causes a small text bubble (facing the camera) to appear with words on it. 
+It will shrink when the player gets close enough tp scale 0, then delete. it will also shrink after a period of time and can be yelled again. 
+
 */
 class InteractTestPleaseDelete : ZilchComponent
 {
@@ -23,45 +38,73 @@ class InteractTestPleaseDelete : ZilchComponent
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//Interactible is attached to objects that can be interacted with by the player.
 class Interactible : ZilchComponent
 {
+    //InteractibleSizeScalar is how big the bounding box of the collidable detection object is.
     [Property]
     var InteractibleSizeScalar : Real = 1.5;
 
     function Initialize(init : CogInitializer)
     {
+        //If the levelsettings does not have an interactible manager, add one and print an error message.
         if(this.LevelSettings.InteractibleManager == null)
         {
             this.LevelSettings.AddComponentByName("InteractibleManager");
             Trace("ERROR: LEVELSETTINGS DOES NOT HAVE INTERACTIBLEMANAGERCOMPONENT. Adding to component list");
         }
+        //Create a new interactible ghost collider for this object at it's position. if the yplayer touches this, then this object can be interacted with
         var childRigid = this.Space.CreateAtPosition(Archetype.Find("InteractCollider"), this.Owner.Transform.Translation);
-        //childRigid.AttachTo(this.Owner);
+        //Increase the size of the bounding box based on property interactiblesize scalar.
         childRigid.SphereCollider.Radius *= this.InteractibleSizeScalar;
+        //Tell the new rigidbody to keep track of this object
         childRigid.InteractRigid.SetParent(this.Owner);
     }
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//InteractRigid is attached to objects that will be created around interactible objects. It should only be attached to an object archetype. 
 class InteractRigid : ZilchComponent
 {
+    //Declare a parent object to keep track of. 
     var ParentObject : Cog = null;
+
     function Initialize(init : CogInitializer)
     {
         Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
         Zero.Connect(this.Owner, Events.CollisionEnded, this.OnCollisionEnded);
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
     }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //If the parent object exists, move to it's position every frame
+        if(this.ParentObject != null)
+        {
+            this.Owner.Transform.Translation = this.ParentObject.Transform.Translation;
+        }
+    }
+
     function SetParent(newParent : Cog)
     {
+        //Set this object's parent. 
         this.ParentObject = newParent;
     }
+
     function OnCollisionStarted(event : CollisionEvent)
     {
+        //If the object colliding is the player, then add the parent object to the interact manager's array of currently colliding objects. 
         if(event.OtherObject.PlayerController3D != null)
         {
             this.LevelSettings.InteractibleManager.AddInteractibleObject(this.ParentObject);
         }
     }
+
     function OnCollisionEnded(event : CollisionEvent)
     {
+        //If the object no longer colliding is the player, then remove the parent object from the interact mnager's array of currently colliding objects.
         if(event.OtherObject.PlayerController3D != null)
         {
             this.LevelSettings.InteractibleManager.RemoveInteractibleObject(this.ParentObject);
@@ -72,8 +115,6 @@ class InteractibleManager : ZilchComponent
 {
     var AllInteractibleObjects : Array[Cog] = Array[Cog]();
     var Player : Cog = null;
-    //var CurrentHighlightedObject : Cog = null;
-    //var Player : Cog = null;
     [Property]
     var HighlightArchetype : Archetype = Archetype.Find("HighlightTest");
     var Highlight : Cog = null;
@@ -84,7 +125,9 @@ class InteractibleManager : ZilchComponent
     
     function Initialize(init : CogInitializer)
     {
+        //Store the player object
         this.Player = this.Space.FindObjectByName("Player");
+        
         Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
         Zero.Connect(this.Space, "InteractEvent", this.OnInteractEvent);
     }

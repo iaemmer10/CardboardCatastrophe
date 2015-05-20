@@ -3,24 +3,11 @@ To DO List
 GitHub solving
 Merging Steven and My files
 
-Finishing three character designs
-Maya exporting the three characters
-Writing proper orientation components
-
-
 Sends an interact event properly
 Conversations work
 Inventories work
 Item prompt system, that sends an "item receieved event" and takes away item 
 then start scripting all of the characters
-
-
-
-Moving character
--Rotation and reflection is based on movement vector
-
--Work on rotation and reflection with the camera panning off
--then do it with the camera
 
 
 5 more characters
@@ -37,4 +24,18 @@ Player understands which button is action and which is jump
 If Jump and Talk can be mapped to the same button adaquately (A and X and Right trigger/Left Trigger do the same thing)
 Y and B and start and select open menus
 
-ghostly flicker in RU with dualcaster mage
+
+
+text bubble working
+text bubble tested
+
+
+Small model appears above someone's head if they can talk and are in proximity
+
+Pressing interact scales it up and moves it to the top of the screen. 
+
+Continuing the interact button continues talking
+ 
+Walking away past a certain threshold lowers it back down to scale 0, then deletes it 
+
+I would make this object HUD if possible.
