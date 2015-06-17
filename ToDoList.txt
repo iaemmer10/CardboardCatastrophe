@@ -32,10 +32,32 @@ text bubble tested
 
 Small model appears above someone's head if they can talk and are in proximity
 
-Pressing interact scales it up and moves it to the top of the screen. 
+
+You walk up to a small item. It has a descriptor, then it ends.
+You walk up to an area that requires an item. It has a descriptor, then a "take item prompt" with your inventory. Then a descriptor, then it ends
+You walk up to a person. They say one thing, then it ends. If you talk to them again they say something else, until you've heard everything they say. There's a boolean for "Repeat last phrase / start over from beginning"
+You walk up to an area that gives you an item. It has a descriptor, a "Give item prompt" with your inventory, then the object deletes from the overworld, then a descriptor, then the convo ends
+You walk up to a person that gives you an item. They say one thing
+
+-Says one thing
+-Says one thing, gives item
+
+Each character or object has a ConversationController
+Each type of component adds itself on initialize to the conversation controller, then sorts based on it's place integer
+Phrases (10 integers, 10 strings, 1 boolean) // tenth phrase is reserved for "Balktalk" when a user walks away from them. booplean is for "Repeast last phrase", when off, the character starts over from beginning.
+Give item( 1 string, 1 archetype, 1 integer)
+Take item ( 3 string, 1 archetype, 1 integer), user says second string if user doesn't have the item, third string if user comes back
+Delete owner (1 integer)// happens on exact frame of pickup and proceeds to next thing in manageR
+end conversation (1 integer) //manager should probably detect when to end convo automatically
+
+There needs to be a "Continue talking" symbol at the end of each phrase, that blinks to indicate you should continue pressing the a button to hear more of what they have to say (talking). - The interact symbol hovering over their heads?
+
+
+
+
+Interactibles have a "Currently interacting boolean" onlogic update, the manager makes the icon invisible if the object is being interacted with is true. 
+Two things send deinteract events: NEW interact events to another object, walking outside of the rigid collider, and custom "I'm done interacting" events sent by the child object when it's done interacting.
 
 Continuing the interact button continues talking
  
-Walking away past a certain threshold lowers it back down to scale 0, then deletes it 
-
 I would make this object HUD if possible.

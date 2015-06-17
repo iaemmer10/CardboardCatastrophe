@@ -3,7 +3,10 @@ class Item : ZilchComponent
     
     
     //Name is the name of the Item. This string will be used whenever text needs to display the item's name. 
-    var Name : String = "[InsertItemDescription]";
+    [Property]
+    var Name : String = "[InsertItemName]";
+    [Property]
+    var Description : String = "[InsertItemDescription]";
     
     
     /*

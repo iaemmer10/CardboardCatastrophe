@@ -290,7 +290,6 @@ class GameControlledCamera : ZilchComponent
     //RemoveAimingTarget removes the given object from the camera's Aiming tracking system. Permenently or temporarily if requested.
     function ChangeDistanceVector(newVector : Real3, isPermanent : Boolean, durationOfChange : Real)
     {
-        Trace(newVector);
         if(isPermanent == true)
         {
             this.OriginalDistVector = newVector;

@@ -7,6 +7,13 @@ class PlayerController3D : ZilchComponent
     var GamePadIndex : Integer = 0;
     //Declare a variable "GameController" which references a plugged in GamePad device that GamePadIndex will refer to
     var GameController : Gamepad = null;
+    
+    var HudLevel: Level = Level.Find("HUDInventory"); // Level that has our HUD in it
+    var HudSpace: Space = null;
+    
+    var ListOfItems : Array[Archetype] =  Array[Archetype]();
+    
+    var InHUDSpace : Boolean = false;
 
     function Initialize(init : CogInitializer)
     {
@@ -16,34 +23,112 @@ class PlayerController3D : ZilchComponent
         this.Cam = this.Space.FindObjectByName("Camera");
         //Connect to logic update
         Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, "ItemHUDCloseEvent", this.OnItemHUDCloseEvent);
+        
+        
+        Trace("delete the next couple of lines after testing ");
+        var box = Archetype.Find("CardboardBox");
+        var box2 = Archetype.Find("RealBox");
+        this.AddItem(box);
+        this.AddItem(box2);
+        this.AddItem(box);
+        this.AddItem(box2);
+        this.AddItem(box);
+    }
+
+    function OnItemHUDCloseEvent(event : ItemHUDCloseEvent)
+    {
+        if(this.HudSpace != null)
+        {
+            this.HudSpace.Destroy();
+            this.InHUDSpace = false;
+        }
     }
 
     function OnLogicUpdate(event : UpdateEvent)
     {
-        //move the character using the swept controller and user input
-        this.Move(event);
         
-        //If the user tries to jump, call the jump from the swept controller
-        if(Zero.Keyboard.KeyIsDown(Keys.Space) || this.GameController.IsButtonPressed(Buttons.A))
+        if(this.InHUDSpace == false)
         {
-            //Trace(this.Owner.SweptController.
-            this.Owner.SweptController.Jump();
-        }
-        //If the player lets go of the jump intentionally, jumpcancel
-        if(this.GameController.IsButtonReleased(Buttons.A))
-        {
-            this.Owner.SweptController.JumpCancel();
-        }
-        
-        if(Zero.Keyboard.KeyIsPressed(Keys.Enter) || Zero.Keyboard.KeyIsPressed(Keys.E) || this.GameController.IsButtonPressed(Buttons.X))
-        {
-            //Create a ScriptEvent
-            var myInteractEvent = new InteractEvent ();
-            //Attach all available data
             
-            //Dispatch it to space
-            this.Space.DispatchEvent("InteractEvent", myInteractEvent);
+        
+            //move the character using the swept controller and user input
+            this.Move(event);
+            
+            //If the user tries to jump, call the jump from the swept controller
+            if(Zero.Keyboard.KeyIsDown(Keys.Space) || this.GameController.IsButtonPressed(Buttons.A))
+            {
+                //Trace(this.Owner.SweptController.
+                this.Owner.SweptController.Jump();
+            }
+            //If the player lets go of the jump intentionally, jumpcancel
+            if(this.GameController.IsButtonReleased(Buttons.A))
+            {
+                this.Owner.SweptController.JumpCancel();
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.Enter) || Zero.Keyboard.KeyIsPressed(Keys.E) || this.GameController.IsButtonPressed(Buttons.X))
+            {
+                //Create a ScriptEvent
+                var myInteractEvent = new InteractEvent ();
+                //Attach all available data
+                
+                //Dispatch it to space
+                this.Space.DispatchEvent("InteractEvent", myInteractEvent);
+            }
+            
+            //If Pause is pressed, bring up the select Hud and PAUSE ALL SPACES
+            if(Zero.Keyboard.KeyIsPressed(Keys.Tab) || this.GameController.IsButtonPressed(Buttons.Back))
+            {
+                this.OpenItemHUD();
+            }
         }
+    }
+    
+    function OpenItemHUD()
+    {
+        //Trace("Open a hudspace");
+        
+        // Create a new Space to load our HUD level into
+        this.HudSpace = this.GameSession.CreateNamedSpace("ItemInventorySpace", Archetype.Find("Space"));
+        // Load the HUD level set in the property
+        this.HudSpace.LoadLevel(this.HudLevel);
+        this.InHUDSpace = true;
+        
+        
+        //Trace("I need to create the items in my inventory right here");
+        //Find the Select icon
+         var selectIcon = this.HudSpace.FindObjectByName("SelectIcon");
+         //Foreach object in my array 
+         
+         var counter = 0.0;
+         foreach (var arctype in this.ListOfItems)
+         {
+             //I need to create a parent object that moves
+             //I need to seperate the rotational movement from the action movement. 
+             //the parent object gets the action movement, the child object has the proper name and the action movement.
+             
+             //spawn a new object at - 5 Z
+             var item = this.HudSpace.CreateAtPosition(arctype, Real3(0,0,0));
+             item.AttachToRelative(selectIcon);
+             item.Transform.Scale = item.Transform.Scale * Real3(0.45, 0.45, 0.45);
+             item.Transform.Translation = Real3(counter * 3,-0.95,-3);
+             
+             //item.AddComponentByName("HighlightController");
+             
+             counter = counter + 1;
+             
+             this.HudSpace.LevelSettings.ListOfItems.AddItem(item);
+             
+             //if this is the first time an object has spawned
+             //if(counter == 0)
+             //{
+             //    //this.HudSpace.FindObjectByName(
+             //    this.HudSpace.LevelSettings.ListOfItems.
+             //}
+         }
+         this.HudSpace.LevelSettings.ListOfItems.AssignSpin();
+         this.HudSpace.LevelSettings.ListOfItems.SortItems; 
     }
 
     function Move(event : UpdateEvent)
@@ -82,63 +167,22 @@ class PlayerController3D : ZilchComponent
         
         //Call the update function of the swept controller
         this.Owner.SweptController.Update(movement, event.Dt);
-        this.RotateBasedOnVector(movement);
     }
-    function RotateBasedOnVector(move : Real3)
+    
+    function AddItem(arctype : Archetype)
     {
-        move -= Real3(0, move.Y, 0);
-        //Trace(move);
-        //If character is not moving, do nothing. Otherwise,
-        if(move != Real3(0,0,0))
-        {
-            //Trace("IsMoving");
-            //grab the quadrant of the movement
-            var quadrant = this.GetQuadrant(Real2(move.X, -move.Z));
-            
-            //if(quadrant == 3)
-            //{
-                
-                //rotate the player on that vector?
-                //First of all, WHAT. This isn't how you do that.
-                //I need an angle from the unit circle
-                var dist = Math.Distance(move, Real3(0,0,0));
-                //var deltaY = move.;
-                var angleInDegrees = Math.ATan(move.Z / move.X);
-                //Trace(Math.ToDegrees(angleInDegrees));
-                
-                //this.Owner.Transform.Rotation = Math.ToQuaternion(Real3(0, Math.Abs(angleInDegrees), 0));
-            //}
-            
-        }
+        this.ListOfItems.Add(arctype);
     }
-    function GetQuadrant(vec : Real2) : Integer
+    function RemoveItem(arctype : Archetype)
     {
-        //1 is top right quadrant
-        //2 is top left quadrant
-        //3 is bottom left quadrant
-        //4 is bottom right quadrant
-        
-        
-        if(vec.X <= 0)
+        for(var i = 0; i < this.ListOfItems.Count; ++i)
         {
-            if(vec.Y <= 0)
+            var obj = this.ListOfItems.Get(i);
+            if(obj == arctype)
             {
-                return 3;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-        else
-        {
-            if(vec.Y <= 0)
-            {
-                return 4;
-            }
-            else
-            {
-                return 1;
+                this.ListOfItems.Set(i, this.ListOfItems.Get(this.ListOfItems.LastIndex));
+                this.ListOfItems.RemoveAt(this.ListOfItems.LastIndex);
+                return;
             }
         }
     }

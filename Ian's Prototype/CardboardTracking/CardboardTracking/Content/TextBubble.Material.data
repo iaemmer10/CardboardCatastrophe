@@ -5,7 +5,7 @@ Material =
 	},
 	TextureDiffuse = 
 	{
-		string DiffuseTexture = "550b9681424702e3:TextBubbleMap",
+		string DiffuseTexture = "550f901b3d18a2c9:TextBubble",
 		Vec2 DiffuseScroll = [0, 0],
 		Vec2 DiffuseTiling = [1, 1],
 		Vec2 DiffuseOffset = [0, 0],

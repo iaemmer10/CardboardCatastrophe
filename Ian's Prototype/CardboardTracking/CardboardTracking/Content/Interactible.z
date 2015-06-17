@@ -25,16 +25,77 @@ When you walk past a certain distance, send a "Delete self" call to the textbox 
 If a player is within a certain distance, a character can "Shout Out" which causes a small text bubble (facing the camera) to appear with words on it. 
 It will shrink when the player gets close enough tp scale 0, then delete. it will also shrink after a period of time and can be yelled again. 
 
+
+
+
+
+GOALS:
+-Conversations work 
+-When I press enter, new text scrolls on the cardboard 
+-when I press enter, new text appears full on the cardboard 
+-when I press enter, new text appears on the console. 
+
+-conversation manager has an array of ..."Conversations"
+-Each conversation is a COG with an integer that tells when to execute it's code, and a "DO THIS" thing it does when it's number comes up.
+-these cogs are children of the ConversationManager object. 
+-Conversation "Just Text", on do, traces out it's text. 
+-Item-Give, on do, puts an item in teh player's inventory 
+-item-take, on do, prompts the player to give an item from the player's inventory. 
+-destoy owner, on do, deletes the owner that was running the conversation and ends the conversation 
+-end conversation, on do, deletes the space and ends the conversation, then resets the conversation.
+
+
+Types of conversations: 
+
+Some conversations want to repeat the last thing they said if you walk away 
+Some conversations want to start from the beginning (No conversations want to restart from the beginning)
+Each conversation 
+
+Talk to someone, they stop talking. Talking to them again has new information -They only have multi convo attached 
+Talk to someone, they stop talking. Talking to them again has the same information. -they only have one convo
+Talking to someone, player leaves in the middle of talking. Talking to them again prompts a "Why you do that" respone - manager has this. (don't do this) 
+Talking to Someone, player leaves AFTEr they ask you for something and don't have it- "Do you have the thing" is repeated until player has the thing. 
+
+
 */
 class InteractTestPleaseDelete : ZilchComponent
 {
+    [Property]
+    var HudLevel: Level = null; // Level that has our HUD in it
+    var HudSpace: Space = null;
+    
     function Initialize(init : CogInitializer)
     {
         Zero.Connect(this.Owner, "InteractEvent", this.OnInteract);
+        Zero.Connect(this.Owner, "DeInteractEvent", this.OnDeInteract);
     }
     function OnInteract(event : InteractEvent)
     {
-        Trace("Try to spawn a text bubble object!");
+        //Trace("Try to spawn a text bubble object!");
+        
+        // Create a new Space to load our HUD level into
+        this.HudSpace = this.GameSession.CreateNamedSpace("HudSpace", Archetype.Find("Space"));
+        // Load the HUD level set in the property
+        this.HudSpace.LoadLevel(this.HudLevel);
+    }
+    function OnDeInteract(event : DeInteractEvent)
+    {
+        if(this.HudSpace != null)
+        {
+            this.HudSpace.Destroy();
+        }
+    }
+    function Destroyed()
+    {
+        
+        //When should the space be destroyed? When this object is deleted, or the text bubble vanishes. 
+        //When does the text bubble vanish? When the player walks outside the reach of the bubble.
+        // Make sure to clean up the extra Space we created
+        if(this.HudSpace != null)
+        {
+            this.HudSpace.Destroy();
+        }
+        
     }
 }
 
@@ -46,6 +107,8 @@ class Interactible : ZilchComponent
     //InteractibleSizeScalar is how big the bounding box of the collidable detection object is.
     [Property]
     var InteractibleSizeScalar : Real = 1.5;
+    
+    var IsCurrentlyInteracting : Boolean = false;
 
     function Initialize(init : CogInitializer)
     {
@@ -61,6 +124,19 @@ class Interactible : ZilchComponent
         childRigid.SphereCollider.Radius *= this.InteractibleSizeScalar;
         //Tell the new rigidbody to keep track of this object
         childRigid.InteractRigid.SetParent(this.Owner);
+        
+        Zero.Connect(this.Owner, "InteractEvent", this.OnInteract);
+        Zero.Connect(this.Owner, "DeInteractEvent", this.OnDeInteract);
+    }
+    function OnInteract(event : InteractEvent)
+    {
+        //Trace("Recording interact");
+        this.IsCurrentlyInteracting = true;
+    }
+    function OnDeInteract(event :DeInteractEvent)
+    {
+        //Trace("recording deinteract");
+        this.IsCurrentlyInteracting = false;
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,8 +183,14 @@ class InteractRigid : ZilchComponent
         //If the object no longer colliding is the player, then remove the parent object from the interact mnager's array of currently colliding objects.
         if(event.OtherObject.PlayerController3D != null)
         {
-            this.LevelSettings.InteractibleManager.RemoveInteractibleObject(this.ParentObject);
+            if(this.LevelSettings != null)
+            {
+                
+                this.LevelSettings.InteractibleManager.RemoveInteractibleObject(this.ParentObject);
+            }
         }
+        //And send a "Disinteract event" to this object's owner. 
+        
     }
 }
 class InteractibleManager : ZilchComponent
@@ -122,6 +204,7 @@ class InteractibleManager : ZilchComponent
     var HeightOfHighlight : Real = 1.5;
     [Property]
     var EaseSpeed : Real = 0.5;
+    var CurrentlyInteractedObject : Cog = null;
     
     function Initialize(init : CogInitializer)
     {
@@ -134,13 +217,6 @@ class InteractibleManager : ZilchComponent
 
     function OnLogicUpdate(event : UpdateEvent)
     {
-        
-        /*
-        Spawn ONE. when array is full
-        Interpolate it's world position every frame to be PROPERTY VECTOR above current highlighted object. 
-
-        DELETE ONE when array is empty. 
-        */
         
         //If there are objects in the array and there is no highlight object,
         if(this.AllInteractibleObjects.Count > 0 && this.Highlight == null)
@@ -168,6 +244,19 @@ class InteractibleManager : ZilchComponent
             var grp = Action.Group(this.Owner.Actions as ActionSet);
             Action.Property(grp, @this.Highlight.HighlightController.Position, pos, this.EaseSpeed, Ease.SinOut);
         }
+        //if the currently closest object is being interacted with, then hide the icon. 
+        var closestobj = this.FindClosestObjectToPlayer();
+        if(closestobj != null)
+        {
+            if(closestobj.Interactible.IsCurrentlyInteracting == true)
+            {
+                this.Highlight.Model.Visible = false;
+            }
+            else
+            {
+                this.Highlight.Model.Visible = true;
+            }
+        }
         
         //remove all of the null objects
         ValidateCogArray(this.AllInteractibleObjects);
@@ -176,18 +265,31 @@ class InteractibleManager : ZilchComponent
     {
         //find the nearest object
         var closest = this.FindClosestObjectToPlayer();
+        
+        //If the currently interacted object is not the closest object anymore,
+        if(this.CurrentlyInteractedObject != closest && this.CurrentlyInteractedObject != null)
+        {
+            //then send it a deinteract event before giving the newinteract event
+            //Create a ScriptEvent
+            var myDeInteractEvent = new DeInteractEvent();
+            //Attach all available data
+            
+            //Dispatch it to owner
+            this.CurrentlyInteractedObject.DispatchEvent("DeInteractEvent", myDeInteractEvent);
+        }
+        
         //Send an interact event to the owner of the closest object.
+        
         if(closest != null)
         {
             //Create a ScriptEvent
             var myInteractEvent = new InteractEvent();
-            //Attach all available data
-            
             //Dispatch it to owner
             closest.DispatchEvent("InteractEvent", myInteractEvent);
-            
         }
-
+        
+        //then make the last dispatched object the new currently interacted
+        this.CurrentlyInteractedObject = closest;
     }
     
     function FindClosestObjectToPlayer() : Cog
@@ -216,6 +318,13 @@ class InteractibleManager : ZilchComponent
     }
     function RemoveInteractibleObject(cog : Cog)
     {
+        //make a new deinteract event
+        //Create a ScriptEvent
+        var myDeInteractEvent = new DeInteractEvent();
+        //Attach all available data
+        //Dispatch it to owner
+        cog.DispatchEvent("DeInteractEvent", myDeInteractEvent);
+        
         for(var i = 0; i < this.AllInteractibleObjects.Count; ++i)
         {
             var obj = this.AllInteractibleObjects.Get(i);
@@ -230,13 +339,16 @@ class InteractibleManager : ZilchComponent
                 return;
             }
         }
+        
+        
+        
     }
 }
 class InteractEvent : Event
 {
-    constructor() : base()
-    {
-    }
+}
+class DeInteractEvent : Event
+{
 }
 class HighlightController : ZilchComponent
 {
@@ -248,6 +360,8 @@ class HighlightController : ZilchComponent
     var EaseSpeed : Real = 1;
     [Property]
     var EaseType : Ease = Ease.Linear;
+    [Property]
+    var RotateSpeedDegrees : Real = 40.0;
     
     function Initialize(init : CogInitializer)
     {
@@ -259,6 +373,9 @@ class HighlightController : ZilchComponent
         
         Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
         
+        Trace("Work on MAking the HighlightDrop out of the sky");
+        //Zero.Connect(this.Owner, Events.on
+        
         //Call a function that updates the sequence naturally
         this.UpdateHeight();
     }
@@ -269,12 +386,12 @@ class HighlightController : ZilchComponent
         //Trace(this.Height);
         this.Owner.Transform.Translation = this.Position + Real3(0, this.Height, 0);
         
-        this.Owner.Transform.RotateAnglesWorld(Real3(0,Math.ToRadians(40)*event.Dt,0));
+        this.Owner.Transform.RotateAnglesWorld(Real3(0,Math.ToRadians(this.RotateSpeedDegrees)*event.Dt,0));
         //this.Owner.Transform.Rotation = Math.ToQuaternion(this.Owner.Transform.EulerAngles);
     }
     function UpdateHeight()
     {
-        //declare an action sequence
+        //declare an action sequence    
         
         var height2 = -this.Height;
         var seq = Action.Sequence(this.Owner.Actions);
@@ -283,3 +400,273 @@ class HighlightController : ZilchComponent
         Action.Call(seq, this.UpdateHeight);
     }
 }
+
+class ConversationManager : ZilchComponent
+{
+    [Property]
+    var HudLevel: Level = null; // Level that has our HUD in it
+    var HudSpace: Space = null;
+    
+    var InteractIndex : Integer = 0;
+    var HasBeenInteracting : Boolean = false;
+    
+    var AllConversations : Array[ZilchComponent] = Array[ZilchComponent]();
+    //var ArrayOfOrder : Array[Integer] = Array[Integer]();
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Owner, "InteractEvent", this.OnInteract);
+        Zero.Connect(this.Owner, "DeInteractEvent", this.OnDeInteract);
+    }
+    
+    function AddConversation(cog : ZilchComponent)
+    {
+        this.AllConversations.Add(cog);
+        //I need to sort
+        this.SortConversations();
+    }
+    
+    function OnInteract(event : InteractEvent)
+    {
+        if(this.HasBeenInteracting == false)
+        {
+            // Create a new Space to load our HUD level into
+            this.HudSpace = this.GameSession.CreateNamedSpace("HudSpace", Archetype.Find("Space"));
+            // Load the HUD level set in the property
+            this.HudSpace.LoadLevel(this.HudLevel);
+        }
+        this.HasBeenInteracting = true;
+        
+        //Find the current object
+        
+        //Send a do event to the current object 
+        var cog = this.AllConversations.Get(this.InteractIndex);
+        
+        //Create a ScriptEvent
+        var myDoThisEvent = new DoThisEvent();
+        //Attach Data
+        myDoThisEvent.HUDSpace = this.HudSpace;
+        //Dispatch it to owner
+        cog.Owner.DispatchEvent("DoThisEvent", myDoThisEvent);
+        
+        if(this.InteractIndex >= this.AllConversations.Count)
+        {
+            this.InteractIndex = 0;
+        }
+    }
+    
+    function OnDeInteract(event : DeInteractEvent)
+    {
+        this.HasBeenInteracting = false;
+        if(this.HudSpace != null)
+        {
+            this.HudSpace.Destroy();
+        }
+        var stringSpin = this.Space.FindObjectByName("StringSpin");
+        if(stringSpin != null)
+        {
+            stringSpin.StringSpinner.SetFinal();
+        }
+    }
+    
+    function Destroyed()
+    {
+        // Make sure to clean up the extra Space we created
+        if(this.HudSpace != null)
+        {
+            this.HudSpace.Destroy();
+        }
+    }
+
+    function SortConversations()
+    {
+        this.AllConversations.Sort(this.SmallestFirst);
+    }
+    function SmallestFirst(left : ZilchComponent, right : ZilchComponent) : Boolean
+    {
+        return left.Owner.ConversationPosition.Index < right.Owner.ConversationPosition.Index;
+    }
+}
+
+
+class ConversationPhrases : ZilchComponent
+{
+    [Dependency]
+    var ConversationPosition : ConversationPosition = null;
+    var Parent : Cog = null;
+    
+    [Property]
+    var ConversationString : String = "TestString";
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Parent = this.Owner.FindRoot();
+        //I need to check if my owner has the manager before attaching to it
+        if(this.Parent.ConversationManager == null)
+        {
+            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
+            this.Parent.AddComponentByName("ConversationManager");
+            
+        }
+        //I need to add myself to the manager. 
+        this.Parent.ConversationManager.AddConversation(this);
+        
+        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
+    }
+
+    function OnDoThisEvent(event : DoThisEvent)
+    {
+        
+        var stringSpin = this.Space.FindObjectByName("StringSpin");
+        
+        if(stringSpin == null)
+        {
+            //I want to create the thing
+            var text : Cog = event.HUDSpace.FindObjectByName("textbubble").FindChildByName("SpriteText");
+            StringSpinning(this.Space, this.ConversationString, 1.0, 39, text, this.Parent.ConversationManager);
+            
+            var textIcon = text.Parent.FindChildByName("TextIcon");
+            textIcon.Model.Visible = false;
+            
+        }
+        else
+        {
+            //I want to end the string by setting it to  
+            stringSpin.StringSpinner.SetFinal();
+        }
+    }
+}
+
+
+class ConversationTakeItem : ZilchComponent
+{
+    [Dependency]
+    var ConversationPosition : ConversationPosition = null;
+    var Parent : Cog = null;
+    
+    [Property]
+    var ConversationString : String = "TestString";
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Parent = this.Owner.FindRoot();
+        //I need to check if my owner has the manager before attaching to it
+        if(this.Parent.ConversationManager == null)
+        {
+            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
+            this.Parent.AddComponentByName("ConversationManager");
+            
+        }
+        //I need to add myself to the manager. 
+        this.Parent.ConversationManager.AddConversation(this);
+        
+        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
+    }
+
+    function OnDoThisEvent(event : DoThisEvent)
+    {
+        //Change the text of the thing
+        Zero.Connect(this.GameSession, "OpenHUDInConversationsEvent", this.OnOpenHUDInConversationsEvent);
+        
+        //Find a stringspin object (this is for checking if one exists or not)
+        var stringSpin = this.Space.FindObjectByName("StringSpin");
+        
+        //If one does NOT exist, then
+        if(stringSpin == null)
+        {
+            //I want to find the spritetext of the textbubble object in the hudspace
+            var text : Cog = event.HUDSpace.FindObjectByName("textbubble").FindChildByName("SpriteText");
+            //I want to create a new stringspin for the word
+            StringSpinning(this.Space, this.ConversationString, 1.0, 39, text, this.Parent.ConversationManager);
+            //I want to find the texticon, and set it to invisible.
+            var textIcon = text.Parent.FindChildByName("TextIcon");
+            textIcon.Model.Visible = false;
+            
+            
+            //Trace("when the texticon appears visible, I want to drop down the item menu and pause the player input.");
+        }
+        //if the stringspin object DOES exist, mark it as the end of the conversation.
+        else
+        {
+            //I want to end the string by setting it to  
+            //Trace("END END END END END END END END ");
+            
+            //Trace("SEND A CUSTOM EVENT RIGHT NOW");
+            stringSpin.StringSpinner.SetFinal();
+            
+        }
+    }
+    function OnOpenHUDInConversationsEvent(event : OpenHUDInConversationsEvent)
+    {
+        Trace("Open HUD!");
+        //I want to open the HUDspace like the player. : )
+        var player = this.Space.FindObjectByName("Player");
+        player.PlayerController3D.OpenItemHUD();
+        
+        Zero.Connect(this.GameSession, "ItemHUDCloseEvent", this.OnItemHUDCloseEvent);
+        Zero.Disconnect(this.GameSession, "OpenHUDInConversationsEvent", this);
+        
+    }
+    function OnItemHUDCloseEvent(event : ItemHUDCloseEvent)
+    {
+        Trace("I need to switch to the next Text in the HUDSPACE when this is called. Also make sure sending the wrong event works (begin sending data with HUDCLOSE)");
+    }
+}
+class ConversationEnd : ZilchComponent
+{
+    [Dependency]
+    var ConversationPosition : ConversationPosition = null;
+    var Parent : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Trace("this works right now");
+        this.Parent = this.Owner.FindRoot();
+        
+        //I need to check if my owner has the manager before attaching to it
+        if(this.Parent.ConversationManager == null)
+        {
+            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
+            this.Parent.AddComponentByName("ConversationManager");
+        }
+        //I need to add myself to the manager. 
+        this.Parent.ConversationManager.AddConversation(this);
+        
+        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
+    }
+
+    function OnDoThisEvent(event : DoThisEvent)
+    {
+        //I need to close the hudspace
+        if(this.Owner.Parent.ConversationManager.HudSpace != null)
+        {
+            this.Owner.Parent.ConversationManager.InteractIndex = 0;
+            this.Owner.Parent.ConversationManager.HasBeenInteracting = false;
+            this.Owner.Parent.ConversationManager.HudSpace.Destroy();
+        }
+        
+        
+        var closestObj = this.LevelSettings.InteractibleManager.FindClosestObjectToPlayer();
+        closestObj.Interactible.IsCurrentlyInteracting = false;
+        //Respawn the interact highlight
+        //this.LevelSettings.InteractibleManager.Highlight.Model.Visible = true;
+    }
+}
+class ConversationPosition : ZilchComponent
+{
+    [Property]
+    var Index : Integer = 0;
+}
+class DoThisEvent : ZilchEvent
+{
+    var HUDSpace : Space = null;
+}
+class ItemHUDCloseEvent : ZilchEvent
+{
+    var Arctype : Archetype = null;
+}
+class OpenHUDInConversationsEvent : ZilchEvent
+{
+    //var Arctype : Archetype = null;
+}
+

@@ -1,6 +1,6 @@
 Level = 
 {
-	LevelSettings = 
+	Cog = 
 	{
 		LinkId = 
 		{
@@ -32,9 +32,37 @@ Level =
 			int Layer = 0,
 			bool Active = true,
 			bool Blocking = true,
-			uint Renderer = 1,
-			uint Camera = 2,
-			ViewportScaling Scaling = Fill,
+			CogPath Renderer = 
+			{
+				string Path = ".",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 1,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath Camera = 
+			{
+				string Path = ":/Camera",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 2,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			ViewportScaling Scaling = Letterbox,
 			Vec2 Resolution = [1280, 720],
 			Vec4 MarginColor = [0, 0, 0, 1],
 		},
@@ -90,9 +118,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [107.596, 89.3105, 23.8414],
+			Vec3 Translation = [-0.286454, 15.8921, 35.7123],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.248641, 0.530155, 0.16614, 0.793417],
+			Quat Rotation = [-0.133075, -0.0259764, -0.00348906, 0.990759],
 		},
 		Camera = 
 		{
@@ -107,10 +135,10 @@ Level =
 		EditorCameraController = 
 		{
 			ControlMode ControlMode = Orbit,
-			float LookDistance = 150.597,
-			float VerticalAngle = 0.607373,
-			float HorizontalAngle = -7.4613,
-			Vec3 LookTarget = [-6.65469, 3.36273, -23.4801],
+			float LookDistance = 50.1303,
+			float VerticalAngle = 0.267035,
+			float HorizontalAngle = -6.23076,
+			Vec3 LookTarget = [2.24733, 2.66405, -12.5748],
 			float MoveSensitivity = 1,
 		},
 		EditorRenderer = 
@@ -164,8 +192,36 @@ Level =
 			bool StartFocused = true,
 			bool StartInPlace = true,
 			float PositionOffset = 3,
-			CogPath StartingAimingFocus = ":/Player",
-			CogPath StartingPositionalFocus = ":/Player",
+			CogPath StartingAimingFocus = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 4,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
+			CogPath StartingPositionalFocus = 
+			{
+				string Path = ":/Player",
+				bool ErrorOnResolveToNull = false,
+				bool ErrorOnPathCantCompute = false,
+				bool ErrorOnDirectLinkFail = false,
+				bool UpdateCogOnPathChange = true,
+				bool UpdatePathOnCogChange = true,
+				bool UpdateCogOnInitialize = true,
+				bool ResolvedNullErrorOccurred = false,
+				uint ResolvedCog = 4,
+				CogPathPreference PathPreference0 = CogRelative,
+				CogPathPreference PathPreference1 = SpaceRelative,
+				CogPathPreference PathPreference2 = Absolute,
+			},
 			Vec3 DistFromTarget = [0, 10, 20],
 			float EaseSpeed = 0.5,
 		},
@@ -174,7 +230,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 4,
+			uint Id = 5,
 		},
 		Named = 
 		{
@@ -223,7 +279,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 5,
+			uint Id = 6,
 		},
 		Named = 
 		{
@@ -231,7 +287,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-4.2356, 31.0403, 15.5831],
+			Vec3 Translation = [18.9699, 45.5263, 47.7878],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [-0.448675, 0.0411075, -0.397043, 0.799598],
 		},
@@ -257,56 +313,9 @@ Level =
 			ShadowSoftening ShadowSoftening = Pcf3x3,
 			Vec4 Color = [0.59, 0.59, 0.59, 1],
 			float NormalOffsetBias = 0.07,
+			float MinFrustumDepth = 1000,
 			float SplitPlaneDistribution = 0.8,
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 6,
-		},
-		Named = 
-		{
-			string Name = "Ground",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [-18.9006, 0.378927, -26.3996],
-			Vec3 Scale = [22.2247, 2.09257, 13.6953],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e816dde:Grid",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		RigidBody = 
-		{
-			bool Static = true,
-			bool Asleep = false,
-			bool Kinematic = false,
-			bool RotationLocked = false,
-			bool Mode2D = false,
-			bool AllowSleep = true,
-			bool Inherit2DMode = true,
-			Vec3 Velocity = [0, 0, 0],
-			Vec3 AngularVelocity = [0, 0, 0],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
+			bool ShowCascadeColors = false,
 		},
 	},
 	Cog = 
@@ -319,10 +328,15 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-19.6684, -3.08549, 33.9235],
-			Vec3 Scale = [6.4108, 1, 13.6953],
+			Vec3 Translation = [-18.9006, 0.378927, -26.3996],
+			Vec3 Scale = [22.2247, 2.09257, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
 		Model = 
@@ -368,9 +382,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-15.9166, -4.85447, 33.9886],
+			Vec3 Translation = [-19.6684, -3.08549, 33.9235],
 			Vec3 Scale = [6.4108, 1, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -417,9 +436,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-17.8411, -3.89985, 33.9886],
+			Vec3 Translation = [-15.9166, -4.85447, 33.9886],
 			Vec3 Scale = [6.4108, 1, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -466,9 +490,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-14.1473, -5.67643, 33.9886],
+			Vec3 Translation = [-17.8411, -3.89985, 33.9886],
 			Vec3 Scale = [6.4108, 1, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -515,9 +544,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-23.2339, -1.32104, 33.8199],
+			Vec3 Translation = [-14.1473, -5.67643, 33.9886],
 			Vec3 Scale = [6.4108, 1, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -564,9 +598,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-21.4514, -2.18064, 33.8748],
+			Vec3 Translation = [-23.2339, -1.32104, 33.8199],
 			Vec3 Scale = [6.4108, 1, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -613,11 +652,16 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [27.2768, -0.486683, 0],
-			Vec3 Scale = [54.2086, 1, 155.428],
-			Quat Rotation = [0, 0, 0.707107, 0.707107],
+			Vec3 Translation = [-21.4514, -2.18064, 33.8748],
+			Vec3 Scale = [6.4108, 1, 13.6953],
+			Quat Rotation = [0, 0, 0, 1],
 		},
 		Model = 
 		{
@@ -662,10 +706,15 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-27.0892, -0.486683, 0],
-			Vec3 Scale = [54.2086, 1, 170.751],
+			Vec3 Translation = [27.2768, -0.486683, 0],
+			Vec3 Scale = [54.2086, 1, 155.428],
 			Quat Rotation = [0, 0, 0.707107, 0.707107],
 		},
 		Model = 
@@ -710,6 +759,65 @@ Level =
 		Named = 
 		{
 			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-27.0892, -0.486683, 0],
+			Vec3 Scale = [54.2086, 1, 170.751],
+			Quat Rotation = [0, 0, 0.707107, 0.707107],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "4de020863e816dde:Grid",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 16,
+		},
+		Named = 
+		{
+			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
 		},
 		Transform = 
 		{
@@ -757,11 +865,16 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 16,
+			uint Id = 17,
 		},
 		Named = 
 		{
 			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
 		},
 		Transform = 
 		{
@@ -806,11 +919,16 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 17,
+			uint Id = 18,
 		},
 		Named = 
 		{
 			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
 		},
 		Transform = 
 		{
@@ -855,7 +973,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 18,
+			uint Id = 19,
 		},
 		Named = 
 		{
@@ -908,11 +1026,16 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 19,
+			uint Id = 20,
 		},
 		Named = 
 		{
 			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
 		},
 		Transform = 
 		{
@@ -957,15 +1080,20 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 20,
+			uint Id = 21,
 		},
 		Named = 
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [27.6284, 2.12494, -5.62132],
+			Vec3 Translation = [27.6284, 2.14355, -9.26351],
 			Vec3 Scale = [21.8118, 1, 13.6953],
 			Quat Rotation = [0.132831, 0.696364, 0.13215, 0.692798],
 		},
@@ -1006,7 +1134,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 21,
+			uint Id = 22,
 		},
 		Named = 
 		{
@@ -1059,64 +1187,20 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 22,
-		},
-		Named = 
-		{
-			string Name = "Ground",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [-21.598, 2.42546, -26.3996],
-			Vec3 Scale = [22.2247, 2.09257, 13.6953],
-			Quat Rotation = [0, 0, 0, 1],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e816dde:Grid",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		RigidBody = 
-		{
-			bool Static = true,
-			bool Asleep = false,
-			bool Kinematic = false,
-			bool RotationLocked = false,
-			bool Mode2D = false,
-			bool AllowSleep = true,
-			bool Inherit2DMode = true,
-			Vec3 Velocity = [0, 0, 0],
-			Vec3 AngularVelocity = [0, 0, 0],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
 			uint Id = 23,
 		},
 		Named = 
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-24.3435, 4.50185, -26.3996],
+			Vec3 Translation = [-21.598, 2.42546, -26.3996],
 			Vec3 Scale = [22.2247, 2.09257, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1163,9 +1247,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-27.5263, 6.5369, -26.3996],
+			Vec3 Translation = [-24.3435, 4.50185, -26.3996],
 			Vec3 Scale = [22.2247, 2.09257, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1212,9 +1301,14 @@ Level =
 		{
 			string Name = "Ground",
 		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
 		Transform = 
 		{
-			Vec3 Translation = [-27.5263, 7.22188, -7.82159],
+			Vec3 Translation = [-27.5263, 6.5369, -26.3996],
 			Vec3 Scale = [22.2247, 2.09257, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1259,12 +1353,17 @@ Level =
 		},
 		Named = 
 		{
-			string Name = "leftCube",
+			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-10, 0.5, 0.544594],
-			Vec3 Scale = [1, 1, 1],
+			Vec3 Translation = [-27.5263, 7.22188, -7.82159],
+			Vec3 Scale = [22.2247, 2.09257, 13.6953],
 			Quat Rotation = [0, 0, 0, 1],
 		},
 		Model = 
@@ -1273,7 +1372,7 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = true,
-			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MaterialName = "4de020863e816dde:Grid",
 			string MeshName = "4de0354322b345ae:Cube",
 			Vec4 Color = [1, 1, 1, 1],
 		},
@@ -1298,13 +1397,6 @@ Level =
 			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
 			Vec3 Offset = [0, 0, 0],
 			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-		Interactible = 
-		{
-			float InteractibleSizeScalar = 1.5,
-		},
-		InteractTestPleaseDelete = 
-		{
 		},
 	},
 	Cog = 
@@ -1359,91 +1451,97 @@ Level =
 		{
 			float InteractibleSizeScalar = 1.5,
 		},
-		InteractTestPleaseDelete = 
+		ConversationManager = 
 		{
+			string HudLevel = "550d1a8d95bab18c:HUDConversations",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 28,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 0,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "Hello There! I am here to assist in the development of item TAKING.",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 29,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 1,
+				},
+				ConversationTakeItem = 
+				{
+					string ConversationString = "Hey, I was lookin for some kind of box, ya dig?",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 30,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 2,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "THIS CONCLUDES THE END OF THE TeST",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 31,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 5,
+				},
+				ConversationEnd = 
+				{
+				},
+				Hierarchy = 
+				{
+				},
+			},
 		},
 	},
 	Cog = 
 	{
 		LinkId = 
 		{
-			uint Id = 28,
-		},
-		Named = 
-		{
-			string Name = "Ground",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [0, -0.653432, -0.0238914],
-			Vec3 Scale = [54.2086, 1, 54.4305],
-			Quat Rotation = [-2.37626e-010, 0, 0, 1],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "4de020863e816dde:Grid",
-			string MeshName = "4de0354322b345ae:Cube",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-		RigidBody = 
-		{
-			bool Static = true,
-			bool Asleep = false,
-			bool Kinematic = false,
-			bool RotationLocked = false,
-			bool Mode2D = false,
-			bool AllowSleep = true,
-			bool Inherit2DMode = true,
-			Vec3 Velocity = [0, 0, 0],
-			Vec3 AngularVelocity = [0, 0, 0],
-		},
-		BoxCollider = 
-		{
-			bool Ghost = false,
-			bool SendsMessages = true,
-			bool Seamless = true,
-			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
-			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
-			Vec3 Offset = [0, 0, 0],
-			Vec3 Size = [0.5, 0.5, 0.5],
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 29,
-		},
-		Named = 
-		{
-			string Name = "TBubble2",
-		},
-		Transform = 
-		{
-			Vec3 Translation = [8.81034, 1.45737, -1.1824],
-			Vec3 Scale = [0.25, 0.1, 0.1],
-			Quat Rotation = [0, 0.707107, 0, 0.707107],
-		},
-		Model = 
-		{
-			bool Visible = true,
-			bool VisibilityCulling = true,
-			bool VisibilityEvents = true,
-			bool CastShadows = true,
-			string MaterialName = "550b955d7996a896:TextBubble",
-			string MeshName = "550b886042bb99fc:TBubble2",
-			Vec4 Color = [1, 1, 1, 1],
-		},
-	},
-	Cog = 
-	{
-		LinkId = 
-		{
-			uint Id = 30,
+			uint Id = 32,
 		},
 		Named = 
 		{
@@ -1500,7 +1598,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 31,
+					uint Id = 33,
 				},
 				Named = 
 				{
@@ -1532,7 +1630,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 32,
+			uint Id = 4,
 		},
 		Named = 
 		{
@@ -1540,7 +1638,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-3.06323, 2.02066, 0.151982],
+			Vec3 Translation = [-8.20261, 2.28978, -0.139351],
 			Vec3 Scale = [2.38721, 4.28513, 0.276466],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1597,9 +1695,9 @@ Level =
 			float AirAcceleration = 15,
 			float GroundDeceleration = 50,
 			float AirDeceleration = 10,
-			float MaxGroundSlope = 45,
+			float MaxGroundSlope = 65,
 			float MaxCeilingSlope = 45,
-			float GroundSnapDistance = 0.1,
+			float GroundSnapDistance = 1,
 			Vec3 ControllerVelocity = [0, 0, 0],
 			bool Grounded = true,
 			float JumpLagTimer = 0.1,
@@ -1617,7 +1715,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 33,
+					uint Id = 34,
 				},
 				Named = 
 				{
@@ -1649,15 +1747,203 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 34,
+			uint Id = 35,
 		},
 		Named = 
 		{
-			string Name = "ExclamationMark",
+			string Name = "Light",
 		},
 		Transform = 
 		{
-			Vec3 Translation = [0.97348, 39.322, 11.0762],
+			Vec3 Translation = [-25.3656, 43.1582, 53.8274],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [-0.0629903, -0.509447, -0.595806, 0.617666],
+		},
+		Light = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = false,
+			LightType LightType = Directional,
+			Vec4 Color = [1, 1, 1, 1],
+			float Intensity = 1,
+			float Range = 106.897,
+			float Falloff = 1,
+			float Angle = 61,
+			float Size = 128.38,
+		},
+		Shadow = 
+		{
+			bool Active = false,
+			Quality Quality = UltraHighQuality,
+			ShadowMapping ShadowMapping = Standard,
+			ShadowSoftening ShadowSoftening = Pcf3x3,
+			Vec4 Color = [0.59, 0.59, 0.59, 1],
+			float NormalOffsetBias = 0.07,
+			float MinFrustumDepth = 1000,
+			float SplitPlaneDistribution = 0.8,
+			bool ShowCascadeColors = false,
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 36,
+		},
+		Named = 
+		{
+			string Name = "Ground",
+		},
+		EditorFlags = 
+		{
+			bool Locked = true,
+			bool Hidden = false,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [0, -0.64578, 0.179882],
+			Vec3 Scale = [59.2908, 1, 53.659],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "4de020863e816dde:Grid",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "553ce2bad920d281:CardboardBox",
+		LinkId = 
+		{
+			uint Id = 37,
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-2.24424, 1.50343, 1.59796],
+			Vec3 Scale = [10, 10, 10],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Named = 
+		{
+			string Name = "CardboardBox",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 38,
+		},
+		Named = 
+		{
+			string Name = "RealBox",
+		},
+		Archetyped = 
+		{
+			string Name = "553ce296247fdae4:RealBox",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [5.93067, 1.28042, -1.41936],
+			Vec3 Scale = [26.9895, 26.9895, 26.9895],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "553cf72f591cbbce:RealBox",
+			string MeshName = "553cf7f654e5579e:RealBox",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.05, 0.05, 0.05],
+		},
+		Item = 
+		{
+			string Name = "Crate",
+			string Description = "A Crate for storing stuff, or standing on stuff. Is full of stuff, possibly. This item is strange, and stretches in unknown ways, as though it had six faces instead of two. ",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 39,
+		},
+		Named = 
+		{
+			string Name = "SelectIcon",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [11.306, 2.37123, 0.820843],
+			Vec3 Scale = [10.5715, 10.5715, 10.5715],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "553fef5da5e68680:SelectIcon",
+			string MeshName = "553fe955c77bc34f:SelectIcon",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 40,
+		},
+		Named = 
+		{
+			string Name = "rightCube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-12.5112, 0.5, 0.544594],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1667,9 +1953,155 @@ Level =
 			bool VisibilityCulling = true,
 			bool VisibilityEvents = true,
 			bool CastShadows = true,
-			string MaterialName = "550a1a357e06d291:ExclamationMark",
-			string MeshName = "550a1a61463ff878:ExclamationMark",
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
 			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		Interactible = 
+		{
+			float InteractibleSizeScalar = 1.5,
+		},
+		ConversationManager = 
+		{
+			string HudLevel = "550d1a8d95bab18c:HUDConversations",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 41,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 0,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "Hello There! I AM DOCTOR RABBIT. Don't forget to brush your teeth! And remember: only you can stop forest fires.",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 42,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 1,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "BREAKING NEWS",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 43,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 2,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "Headlines: LOCAL HARRISON THINKS GAME IS SHIT",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 44,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 3,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = """Hire a fucking artist, seriously"" says one local Harrison, Harrison Barton. This particular Harrison has been working with artists for years- ",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 45,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 4,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = """They are normal people like you and me,"" says barton.",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 46,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 5,
+				},
+				ConversationEnd = 
+				{
+				},
+			},
 		},
 	},
 },
