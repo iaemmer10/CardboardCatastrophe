@@ -4,14 +4,11 @@ class Logo : ZilchComponent
     {
         //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
         Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
-        Trace(this.Space.TimeSpace.TimeScale);
         this.Space.TimeSpace.TimeScale = 999.01;
-        Trace(this.Space.TimeSpace.TimeScale);
     }
 
     function OnCollisionStarted(event : CollisionEvent)
     {
-        Trace(event.OtherObject.Name);
         if(this.Owner.Model.Material == Material.Find("Logo1"))
         {
             this.Owner.Model.Material = Material.Find("Logo2");

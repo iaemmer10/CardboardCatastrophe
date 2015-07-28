@@ -112,9 +112,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [16.3575, 31.6581, -4.15066],
+			Vec3 Translation = [-1.51042, 24.7209, 0.242583],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.11152, 0.653969, 0.0983197, 0.741769],
+			Quat Rotation = [0.11229, -0.0286031, 0.00323363, 0.993259],
 		},
 		Camera = 
 		{
@@ -129,9 +129,9 @@ Level =
 		EditorCameraController = 
 		{
 			ControlMode ControlMode = Orbit,
-			float LookDistance = 18.4416,
-			float VerticalAngle = 0.298451,
-			float HorizontalAngle = -1.44515,
+			float LookDistance = 6.78429,
+			float VerticalAngle = -0.225148,
+			float HorizontalAngle = 0.0575785,
 			Vec3 LookTarget = [-1.12986, 26.2355, -6.35952],
 			float MoveSensitivity = 1,
 		},
@@ -250,7 +250,7 @@ Level =
 				},
 				Named = 
 				{
-					string Name = "SpriteText",
+					string Name = "StringSpin",
 				},
 				Transform = 
 				{
@@ -270,7 +270,7 @@ Level =
 					string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
 					string FontName = "550cee9fb691cf33:pastel crayon",
 					uint FontSize = 43,
-					string Text = "Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!Hello There! Doctor Rabbit here, telling you to brush your teeth!",
+					string Text = " ",
 					TextAlign Align = Left,
 					float PixelsPerUnit = 64,
 					bool Smoothing = true,
@@ -312,18 +312,6 @@ Level =
 			float Falloff = 1,
 			float Angle = 61,
 			float Size = 128.38,
-		},
-		Shadow = 
-		{
-			bool Active = true,
-			Quality Quality = UltraHighQuality,
-			ShadowMapping ShadowMapping = Standard,
-			ShadowSoftening ShadowSoftening = Pcf3x3,
-			Vec4 Color = [0.59, 0.59, 0.59, 1],
-			float NormalOffsetBias = 0.07,
-			float MinFrustumDepth = 1000,
-			float SplitPlaneDistribution = 0.8,
-			bool ShowCascadeColors = false,
 		},
 	},
 },

@@ -71,7 +71,6 @@ class InteractTestPleaseDelete : ZilchComponent
     }
     function OnInteract(event : InteractEvent)
     {
-        //Trace("Try to spawn a text bubble object!");
         
         // Create a new Space to load our HUD level into
         this.HudSpace = this.GameSession.CreateNamedSpace("HudSpace", Archetype.Find("Space"));
@@ -130,12 +129,10 @@ class Interactible : ZilchComponent
     }
     function OnInteract(event : InteractEvent)
     {
-        //Trace("Recording interact");
         this.IsCurrentlyInteracting = true;
     }
     function OnDeInteract(event :DeInteractEvent)
     {
-        //Trace("recording deinteract");
         this.IsCurrentlyInteracting = false;
     }
 }
@@ -381,9 +378,6 @@ class HighlightController : ZilchComponent
     }
     function OnLogicUpdate(event :UpdateEvent)
     {
-        //Trace("I'm updating");
-        //Trace(this.Position);
-        //Trace(this.Height);
         this.Owner.Transform.Translation = this.Position + Real3(0, this.Height, 0);
         
         this.Owner.Transform.RotateAnglesWorld(Real3(0,Math.ToRadians(this.RotateSpeedDegrees)*event.Dt,0));
@@ -401,272 +395,11 @@ class HighlightController : ZilchComponent
     }
 }
 
-class ConversationManager : ZilchComponent
-{
-    [Property]
-    var HudLevel: Level = null; // Level that has our HUD in it
-    var HudSpace: Space = null;
-    
-    var InteractIndex : Integer = 0;
-    var HasBeenInteracting : Boolean = false;
-    
-    var AllConversations : Array[ZilchComponent] = Array[ZilchComponent]();
-    //var ArrayOfOrder : Array[Integer] = Array[Integer]();
-
-    function Initialize(init : CogInitializer)
-    {
-        Zero.Connect(this.Owner, "InteractEvent", this.OnInteract);
-        Zero.Connect(this.Owner, "DeInteractEvent", this.OnDeInteract);
-    }
-    
-    function AddConversation(cog : ZilchComponent)
-    {
-        this.AllConversations.Add(cog);
-        //I need to sort
-        this.SortConversations();
-    }
-    
-    function OnInteract(event : InteractEvent)
-    {
-        if(this.HasBeenInteracting == false)
-        {
-            // Create a new Space to load our HUD level into
-            this.HudSpace = this.GameSession.CreateNamedSpace("HudSpace", Archetype.Find("Space"));
-            // Load the HUD level set in the property
-            this.HudSpace.LoadLevel(this.HudLevel);
-        }
-        this.HasBeenInteracting = true;
-        
-        //Find the current object
-        
-        //Send a do event to the current object 
-        var cog = this.AllConversations.Get(this.InteractIndex);
-        
-        //Create a ScriptEvent
-        var myDoThisEvent = new DoThisEvent();
-        //Attach Data
-        myDoThisEvent.HUDSpace = this.HudSpace;
-        //Dispatch it to owner
-        cog.Owner.DispatchEvent("DoThisEvent", myDoThisEvent);
-        
-        if(this.InteractIndex >= this.AllConversations.Count)
-        {
-            this.InteractIndex = 0;
-        }
-    }
-    
-    function OnDeInteract(event : DeInteractEvent)
-    {
-        this.HasBeenInteracting = false;
-        if(this.HudSpace != null)
-        {
-            this.HudSpace.Destroy();
-        }
-        var stringSpin = this.Space.FindObjectByName("StringSpin");
-        if(stringSpin != null)
-        {
-            stringSpin.StringSpinner.SetFinal();
-        }
-    }
-    
-    function Destroyed()
-    {
-        // Make sure to clean up the extra Space we created
-        if(this.HudSpace != null)
-        {
-            this.HudSpace.Destroy();
-        }
-    }
-
-    function SortConversations()
-    {
-        this.AllConversations.Sort(this.SmallestFirst);
-    }
-    function SmallestFirst(left : ZilchComponent, right : ZilchComponent) : Boolean
-    {
-        return left.Owner.ConversationPosition.Index < right.Owner.ConversationPosition.Index;
-    }
-}
-
-
-class ConversationPhrases : ZilchComponent
-{
-    [Dependency]
-    var ConversationPosition : ConversationPosition = null;
-    var Parent : Cog = null;
-    
-    [Property]
-    var ConversationString : String = "TestString";
-    
-    function Initialize(init : CogInitializer)
-    {
-        this.Parent = this.Owner.FindRoot();
-        //I need to check if my owner has the manager before attaching to it
-        if(this.Parent.ConversationManager == null)
-        {
-            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
-            this.Parent.AddComponentByName("ConversationManager");
-            
-        }
-        //I need to add myself to the manager. 
-        this.Parent.ConversationManager.AddConversation(this);
-        
-        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
-    }
-
-    function OnDoThisEvent(event : DoThisEvent)
-    {
-        
-        var stringSpin = this.Space.FindObjectByName("StringSpin");
-        
-        if(stringSpin == null)
-        {
-            //I want to create the thing
-            var text : Cog = event.HUDSpace.FindObjectByName("textbubble").FindChildByName("SpriteText");
-            StringSpinning(this.Space, this.ConversationString, 1.0, 39, text, this.Parent.ConversationManager);
-            
-            var textIcon = text.Parent.FindChildByName("TextIcon");
-            textIcon.Model.Visible = false;
-            
-        }
-        else
-        {
-            //I want to end the string by setting it to  
-            stringSpin.StringSpinner.SetFinal();
-        }
-    }
-}
-
-
-class ConversationTakeItem : ZilchComponent
-{
-    [Dependency]
-    var ConversationPosition : ConversationPosition = null;
-    var Parent : Cog = null;
-    
-    [Property]
-    var ConversationString : String = "TestString";
-    
-    function Initialize(init : CogInitializer)
-    {
-        this.Parent = this.Owner.FindRoot();
-        //I need to check if my owner has the manager before attaching to it
-        if(this.Parent.ConversationManager == null)
-        {
-            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
-            this.Parent.AddComponentByName("ConversationManager");
-            
-        }
-        //I need to add myself to the manager. 
-        this.Parent.ConversationManager.AddConversation(this);
-        
-        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
-    }
-
-    function OnDoThisEvent(event : DoThisEvent)
-    {
-        //Change the text of the thing
-        Zero.Connect(this.GameSession, "OpenHUDInConversationsEvent", this.OnOpenHUDInConversationsEvent);
-        
-        //Find a stringspin object (this is for checking if one exists or not)
-        var stringSpin = this.Space.FindObjectByName("StringSpin");
-        
-        //If one does NOT exist, then
-        if(stringSpin == null)
-        {
-            //I want to find the spritetext of the textbubble object in the hudspace
-            var text : Cog = event.HUDSpace.FindObjectByName("textbubble").FindChildByName("SpriteText");
-            //I want to create a new stringspin for the word
-            StringSpinning(this.Space, this.ConversationString, 1.0, 39, text, this.Parent.ConversationManager);
-            //I want to find the texticon, and set it to invisible.
-            var textIcon = text.Parent.FindChildByName("TextIcon");
-            textIcon.Model.Visible = false;
-            
-            
-            //Trace("when the texticon appears visible, I want to drop down the item menu and pause the player input.");
-        }
-        //if the stringspin object DOES exist, mark it as the end of the conversation.
-        else
-        {
-            //I want to end the string by setting it to  
-            //Trace("END END END END END END END END ");
-            
-            //Trace("SEND A CUSTOM EVENT RIGHT NOW");
-            stringSpin.StringSpinner.SetFinal();
-            
-        }
-    }
-    function OnOpenHUDInConversationsEvent(event : OpenHUDInConversationsEvent)
-    {
-        Trace("Open HUD!");
-        //I want to open the HUDspace like the player. : )
-        var player = this.Space.FindObjectByName("Player");
-        player.PlayerController3D.OpenItemHUD();
-        
-        Zero.Connect(this.GameSession, "ItemHUDCloseEvent", this.OnItemHUDCloseEvent);
-        Zero.Disconnect(this.GameSession, "OpenHUDInConversationsEvent", this);
-        
-    }
-    function OnItemHUDCloseEvent(event : ItemHUDCloseEvent)
-    {
-        Trace("I need to switch to the next Text in the HUDSPACE when this is called. Also make sure sending the wrong event works (begin sending data with HUDCLOSE)");
-    }
-}
-class ConversationEnd : ZilchComponent
-{
-    [Dependency]
-    var ConversationPosition : ConversationPosition = null;
-    var Parent : Cog = null;
-    
-    function Initialize(init : CogInitializer)
-    {
-        //Trace("this works right now");
-        this.Parent = this.Owner.FindRoot();
-        
-        //I need to check if my owner has the manager before attaching to it
-        if(this.Parent.ConversationManager == null)
-        {
-            Trace("Error, there is no conversation manager attached to the parent of this object. Attaching one");
-            this.Parent.AddComponentByName("ConversationManager");
-        }
-        //I need to add myself to the manager. 
-        this.Parent.ConversationManager.AddConversation(this);
-        
-        Zero.Connect(this.Owner, "DoThisEvent", this.OnDoThisEvent);
-    }
-
-    function OnDoThisEvent(event : DoThisEvent)
-    {
-        //I need to close the hudspace
-        if(this.Owner.Parent.ConversationManager.HudSpace != null)
-        {
-            this.Owner.Parent.ConversationManager.InteractIndex = 0;
-            this.Owner.Parent.ConversationManager.HasBeenInteracting = false;
-            this.Owner.Parent.ConversationManager.HudSpace.Destroy();
-        }
-        
-        
-        var closestObj = this.LevelSettings.InteractibleManager.FindClosestObjectToPlayer();
-        closestObj.Interactible.IsCurrentlyInteracting = false;
-        //Respawn the interact highlight
-        //this.LevelSettings.InteractibleManager.Highlight.Model.Visible = true;
-    }
-}
-class ConversationPosition : ZilchComponent
-{
-    [Property]
-    var Index : Integer = 0;
-}
-class DoThisEvent : ZilchEvent
-{
-    var HUDSpace : Space = null;
-}
 class ItemHUDCloseEvent : ZilchEvent
 {
     var Arctype : Archetype = null;
 }
 class OpenHUDInConversationsEvent : ZilchEvent
 {
-    //var Arctype : Archetype = null;
 }
 

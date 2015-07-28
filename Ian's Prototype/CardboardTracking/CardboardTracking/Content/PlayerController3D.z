@@ -14,6 +14,7 @@ class PlayerController3D : ZilchComponent
     var ListOfItems : Array[Archetype] =  Array[Archetype]();
     
     var InHUDSpace : Boolean = false;
+    var InHUDSpace2 : Boolean = false;
 
     function Initialize(init : CogInitializer)
     {
@@ -47,34 +48,35 @@ class PlayerController3D : ZilchComponent
 
     function OnLogicUpdate(event : UpdateEvent)
     {
-        
         if(this.InHUDSpace == false)
         {
+            if(this.InHUDSpace2 == false)
+            {
+                //move the character using the swept controller and user input
+                this.Move(event);
+            }
             
-        
-            //move the character using the swept controller and user input
-            this.Move(event);
-            
-            //If the user tries to jump, call the jump from the swept controller
+            //If the user tries to jump, see if they are next to anything that can be interacted with
             if(Zero.Keyboard.KeyIsDown(Keys.Space) || this.GameController.IsButtonPressed(Buttons.A))
             {
-                //Trace(this.Owner.SweptController.
-                this.Owner.SweptController.Jump();
+                //if the player is colliding with something, then send an event
+                if(this.LevelSettings.InteractibleManager.AllInteractibleObjects.Count > 0)
+                {
+                    //Create a ScriptEvent
+                    var myInteractEvent = new InteractEvent ();
+                    //Dispatch it to space
+                    this.Space.DispatchEvent("InteractEvent", myInteractEvent);
+                }
+                //else, if the player is not colliding with a inspectable item/character, then jump
+                else
+                {
+                    this.Owner.SweptController.Jump();
+                }
             }
             //If the player lets go of the jump intentionally, jumpcancel
             if(this.GameController.IsButtonReleased(Buttons.A))
             {
                 this.Owner.SweptController.JumpCancel();
-            }
-            
-            if(Zero.Keyboard.KeyIsPressed(Keys.Enter) || Zero.Keyboard.KeyIsPressed(Keys.E) || this.GameController.IsButtonPressed(Buttons.X))
-            {
-                //Create a ScriptEvent
-                var myInteractEvent = new InteractEvent ();
-                //Attach all available data
-                
-                //Dispatch it to space
-                this.Space.DispatchEvent("InteractEvent", myInteractEvent);
             }
             
             //If Pause is pressed, bring up the select Hud and PAUSE ALL SPACES
@@ -87,45 +89,25 @@ class PlayerController3D : ZilchComponent
     
     function OpenItemHUD()
     {
-        //Trace("Open a hudspace");
-        
         // Create a new Space to load our HUD level into
         this.HudSpace = this.GameSession.CreateNamedSpace("ItemInventorySpace", Archetype.Find("Space"));
         // Load the HUD level set in the property
         this.HudSpace.LoadLevel(this.HudLevel);
         this.InHUDSpace = true;
-        
-        
-        //Trace("I need to create the items in my inventory right here");
+        //("I need to create the items in my inventory right here");
         //Find the Select icon
          var selectIcon = this.HudSpace.FindObjectByName("SelectIcon");
          //Foreach object in my array 
-         
          var counter = 0.0;
          foreach (var arctype in this.ListOfItems)
          {
-             //I need to create a parent object that moves
-             //I need to seperate the rotational movement from the action movement. 
-             //the parent object gets the action movement, the child object has the proper name and the action movement.
-             
-             //spawn a new object at - 5 Z
+             //spawn a new object
              var item = this.HudSpace.CreateAtPosition(arctype, Real3(0,0,0));
              item.AttachToRelative(selectIcon);
              item.Transform.Scale = item.Transform.Scale * Real3(0.45, 0.45, 0.45);
              item.Transform.Translation = Real3(counter * 3,-0.95,-3);
-             
-             //item.AddComponentByName("HighlightController");
-             
              counter = counter + 1;
-             
              this.HudSpace.LevelSettings.ListOfItems.AddItem(item);
-             
-             //if this is the first time an object has spawned
-             //if(counter == 0)
-             //{
-             //    //this.HudSpace.FindObjectByName(
-             //    this.HudSpace.LevelSettings.ListOfItems.
-             //}
          }
          this.HudSpace.LevelSettings.ListOfItems.AssignSpin();
          this.HudSpace.LevelSettings.ListOfItems.SortItems; 
@@ -135,14 +117,12 @@ class PlayerController3D : ZilchComponent
     {
         //Declare a movement variable to pass to the swept controller
         var movement : Real3 = Real3(0,0,0);
-        
         /*//To use basic movement code, use the following linw
         //movement += Real3(this.GameController.LeftStick.X, 0, -this.GameController.LeftStick.Y);*/
         
         //To base movement on the camera, use this line
         movement += this.Cam.Orientation.WorldForward*this.GameController.LeftStick.Y;
         movement += this.Cam.Orientation.WorldRight*this.GameController.LeftStick.X;
-        
         //Keyboard Controls
         if(Zero.Keyboard.KeyIsDown(Keys.Right))
         {
@@ -164,15 +144,15 @@ class PlayerController3D : ZilchComponent
             //movement += Real3(0, 0, 5);
             movement -= this.Cam.Orientation.WorldForward;
         }
-        
         //Call the update function of the swept controller
         this.Owner.SweptController.Update(movement, event.Dt);
     }
-    
+
     function AddItem(arctype : Archetype)
     {
         this.ListOfItems.Add(arctype);
     }
+
     function RemoveItem(arctype : Archetype)
     {
         for(var i = 0; i < this.ListOfItems.Count; ++i)

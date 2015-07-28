@@ -67,11 +67,16 @@ class ListOfItems : ZilchComponent
                 leftmost = item;
             }
         }
-        
         var closest = this.FindClosest();
         
+        if(this.GameController.LeftStick.X - this.GameController.LeftStickDelta.X == 0.0 && this.GameController.LeftStick.X != 0.0)
+        {
+            
+            //Trace(this.GameController.LeftStick.X);
+        }
+        
         //If the player has pressed the left key AND the current indext is not set to the left most position,
-        if(Zero.Keyboard.KeyIsPressed(Keys.Left) && this.ItemIndex != 0)
+        if(Zero.Keyboard.KeyIsPressed(Keys.Left) || (this.GameController.LeftStick.X - this.GameController.LeftStickDelta.X == 0.0 && this.GameController.LeftStick.X < 0.0 ) && this.ItemIndex != 0)
         {
             //Go through each object in the array of items
             foreach(var item in this.ListOfItems)
@@ -99,7 +104,7 @@ class ListOfItems : ZilchComponent
                 rightmost = item;
             }
         }
-        if(Zero.Keyboard.KeyIsPressed(Keys.Right) && this.ItemIndex < this.ListOfItems.Count -1)
+        if(Zero.Keyboard.KeyIsPressed(Keys.Right) || (this.GameController.LeftStick.X - this.GameController.LeftStickDelta.X == 0.0 && this.GameController.LeftStick.X > 0.0 ) && this.ItemIndex < this.ListOfItems.Count -1)
         {
             foreach(var item in this.ListOfItems)
             {
@@ -115,8 +120,7 @@ class ListOfItems : ZilchComponent
     }
     function CheckClose()
     {
-        if((this.GameController.IsButtonPressed(Buttons.A) || 
-        this.GameController.IsButtonPressed(Buttons.B) || 
+        if((this.GameController.IsButtonPressed(Buttons.B) || 
         this.GameController.IsButtonPressed(Buttons.X) || 
         this.GameController.IsButtonPressed(Buttons.Start) || 
         this.GameController.IsButtonPressed(Buttons.Back))
@@ -130,9 +134,7 @@ class ListOfItems : ZilchComponent
             //Create a ScriptEvent
             var myCloseHUDEvent = new ItemHUDCloseEvent();
             //Attach all available data
-            var cog = this.FindClosest();
-            var blah = Archetype.Find(cog.Name);
-            myCloseHUDEvent.Arctype = blah;
+            myCloseHUDEvent.Arctype = Archetype.Find(this.FindClosest().Name);
             //Dispatch it to owner
             this.GameSession.DispatchEvent("ItemHUDCloseEvent", myCloseHUDEvent);
         }
@@ -141,8 +143,7 @@ class ListOfItems : ZilchComponent
     function OnSelectReleased(event : UpdateEvent)
     {
         
-        if(this.GameController.IsButtonReleased(Buttons.A)
-         || this.GameController.IsButtonReleased(Buttons.B)
+        if(this.GameController.IsButtonReleased(Buttons.B)
          || this.GameController.IsButtonReleased(Buttons.X)
          || this.GameController.IsButtonReleased(Buttons.Start)
          || this.GameController.IsButtonReleased(Buttons.Back))
@@ -196,7 +197,6 @@ class ListOfItems : ZilchComponent
             
             var closest = this.FindClosest();
             
-            Trace(closest.Transform.Translation);
             //Check every object in the list for the component highlight controller
             foreach (var item in this.ListOfItems)
             {
@@ -233,7 +233,6 @@ class ListOfItems : ZilchComponent
     
     function AddItem(cog : Cog)
     {
-        Trace(cog.Name);
         this.ListOfItems.Add(cog);
     }
     function RemoveItem(cog : Cog)

@@ -103,9 +103,9 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-4.51282, 10.261, 33.7109],
+			Vec3 Translation = [-4.51282, 10.261, 33.7108],
 			Vec3 Scale = [1, 1, 1],
-			Quat Rotation = [-0.102635, -0.0338471, -0.0034944, 0.994137],
+			Quat Rotation = [-0.102636, -0.033847, -0.0034944, 0.994137],
 		},
 		Camera = 
 		{
@@ -164,6 +164,9 @@ Level =
 		Microphone = 
 		{
 			bool Active = true,
+		},
+		Tracesoninitialize = 
+		{
 		},
 	},
 	Cog = 

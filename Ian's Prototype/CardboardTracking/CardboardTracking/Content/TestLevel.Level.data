@@ -1451,7 +1451,7 @@ Level =
 		{
 			float InteractibleSizeScalar = 1.5,
 		},
-		ConversationManager = 
+		Conversation = 
 		{
 			string HudLevel = "550d1a8d95bab18c:HUDConversations",
 		},
@@ -1467,13 +1467,10 @@ Level =
 				{
 					string Name = "Transform",
 				},
-				ConversationPosition = 
+				TalkAction = 
 				{
-					int Index = 0,
-				},
-				ConversationPhrases = 
-				{
-					string ConversationString = "Hello There! I am here to assist in the development of item TAKING.",
+					string TalkText = "Were going to have a character in a building somewhere. He will say: My name is Harry. My son is outside. Outside will be a punk  with green hair spraypainting a wall.",
+					int PlaceInConversation = 0,
 				},
 			},
 			Cog = 
@@ -1486,13 +1483,11 @@ Level =
 				{
 					string Name = "Transform",
 				},
-				ConversationPosition = 
+				GiveAction = 
 				{
-					int Index = 1,
-				},
-				ConversationTakeItem = 
-				{
-					string ConversationString = "Hey, I was lookin for some kind of box, ya dig?",
+					string Arctype = "553ce2bad920d281:CardboardBox",
+					string TalkText = "Error, report to playtester: No text assigned",
+					int PlaceInConversation = 0,
 				},
 			},
 			Cog = 
@@ -1505,34 +1500,10 @@ Level =
 				{
 					string Name = "Transform",
 				},
-				ConversationPosition = 
+				TalkAction = 
 				{
-					int Index = 2,
-				},
-				ConversationPhrases = 
-				{
-					string ConversationString = "THIS CONCLUDES THE END OF THE TeST",
-				},
-			},
-			Cog = 
-			{
-				LinkId = 
-				{
-					uint Id = 31,
-				},
-				Named = 
-				{
-					string Name = "Transform",
-				},
-				ConversationPosition = 
-				{
-					int Index = 5,
-				},
-				ConversationEnd = 
-				{
-				},
-				Hierarchy = 
-				{
+					string TalkText = "This should be the last of the conversation actions.",
+					int PlaceInConversation = 3,
 				},
 			},
 		},
@@ -1541,7 +1512,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 32,
+			uint Id = 31,
 		},
 		Named = 
 		{
@@ -1598,7 +1569,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 33,
+					uint Id = 32,
 				},
 				Named = 
 				{
@@ -1715,7 +1686,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 34,
+					uint Id = 33,
 				},
 				Named = 
 				{
@@ -1747,7 +1718,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 35,
+			uint Id = 34,
 		},
 		Named = 
 		{
@@ -1790,7 +1761,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 36,
+			uint Id = 35,
 		},
 		Named = 
 		{
@@ -1845,7 +1816,7 @@ Level =
 		string Name = "553ce2bad920d281:CardboardBox",
 		LinkId = 
 		{
-			uint Id = 37,
+			uint Id = 36,
 		},
 		Transform = 
 		{
@@ -1862,7 +1833,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 38,
+			uint Id = 37,
 		},
 		Named = 
 		{
@@ -1908,7 +1879,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 39,
+			uint Id = 38,
 		},
 		Named = 
 		{
@@ -1935,7 +1906,7 @@ Level =
 	{
 		LinkId = 
 		{
-			uint Id = 40,
+			uint Id = 39,
 		},
 		Named = 
 		{
@@ -1943,7 +1914,7 @@ Level =
 		},
 		Transform = 
 		{
-			Vec3 Translation = [-12.5112, 0.5, 0.544594],
+			Vec3 Translation = [-17.9961, 0.5, 0.544594],
 			Vec3 Scale = [1, 1, 1],
 			Quat Rotation = [0, 0, 0, 1],
 		},
@@ -1993,7 +1964,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 41,
+					uint Id = 40,
 				},
 				Named = 
 				{
@@ -2012,7 +1983,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 42,
+					uint Id = 41,
 				},
 				Named = 
 				{
@@ -2031,7 +2002,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 43,
+					uint Id = 42,
 				},
 				Named = 
 				{
@@ -2050,7 +2021,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 44,
+					uint Id = 43,
 				},
 				Named = 
 				{
@@ -2069,7 +2040,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 45,
+					uint Id = 44,
 				},
 				Named = 
 				{
@@ -2088,7 +2059,7 @@ Level =
 			{
 				LinkId = 
 				{
-					uint Id = 46,
+					uint Id = 45,
 				},
 				Named = 
 				{
@@ -2100,6 +2071,379 @@ Level =
 				},
 				ConversationEnd = 
 				{
+				},
+			},
+		},
+	},
+	ArchetypeInstance = 
+	{
+		string Name = "55d3c82f501e8609:ConversationRejection",
+		LinkId = 
+		{
+			uint Id = 46,
+		},
+		Named = 
+		{
+			string Name = "Transform",
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 47,
+		},
+		Named = 
+		{
+			string Name = "rightCube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-15.2445, 0.5, 0.544594],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		Interactible = 
+		{
+			float InteractibleSizeScalar = 1.5,
+		},
+		ConversationManager = 
+		{
+			string HudLevel = "550d1a8d95bab18c:HUDConversations",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 48,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 0,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "Hello There! I am here to assist in the development of item TAKING.",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 49,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 1,
+				},
+				ConversationTakeItem = 
+				{
+					string ConversationString = "Hey, I was lookin for some kind of box, ya dig?",
+					string RejectionString = "TestRejection",
+					string Arctype = "553ce2bad920d281:CardboardBox",
+					int ReturnIndex = 0,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 50,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 2,
+				},
+				ConversationPhrases = 
+				{
+					string ConversationString = "That's EXACTLY WHAT I WANTED. Thanks, broski",
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 51,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				ConversationPosition = 
+				{
+					int Index = 5,
+				},
+				ConversationEnd = 
+				{
+				},
+				Hierarchy = 
+				{
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 52,
+		},
+		Named = 
+		{
+			string Name = "rightCube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-8, 0.5, 4.91109],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		Interactible = 
+		{
+			float InteractibleSizeScalar = 1.5,
+		},
+		Conversation = 
+		{
+			string HudLevel = "550d1a8d95bab18c:HUDConversations",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 53,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TalkAction = 
+				{
+					string TalkText = "Were going to have a character in a building somewhere. He will say: My name is Harry. My son is outside. Outside will be a punk  with green hair spraypainting a wall.",
+					int PlaceInConversation = 0,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 54,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TakeAction = 
+				{
+					string Arctype = "553ce2bad920d281:CardboardBox",
+					string TalkText = "Do you has cardboard box? I can has? plox?",
+					string RejectText = "Error, report to playtester: Item RejectionText not assigned; 'Eww, no, that is not what I wanted'",
+					int PlaceInConversation = 1,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 55,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TalkAction = 
+				{
+					string TalkText = "This should be the last of the conversation actions.",
+					int PlaceInConversation = 3,
+				},
+			},
+		},
+	},
+	Cog = 
+	{
+		LinkId = 
+		{
+			uint Id = 56,
+		},
+		Named = 
+		{
+			string Name = "rightCube",
+		},
+		Transform = 
+		{
+			Vec3 Translation = [-8, 0.5, 8.80888],
+			Vec3 Scale = [1, 1, 1],
+			Quat Rotation = [0, 0, 0, 1],
+		},
+		Model = 
+		{
+			bool Visible = true,
+			bool VisibilityCulling = true,
+			bool VisibilityEvents = true,
+			bool CastShadows = true,
+			string MaterialName = "4de020863e85bb61:DefaultMaterial",
+			string MeshName = "4de0354322b345ae:Cube",
+			Vec4 Color = [1, 1, 1, 1],
+		},
+		RigidBody = 
+		{
+			bool Static = true,
+			bool Asleep = false,
+			bool Kinematic = false,
+			bool RotationLocked = false,
+			bool Mode2D = false,
+			bool AllowSleep = true,
+			bool Inherit2DMode = true,
+			Vec3 Velocity = [0, 0, 0],
+			Vec3 AngularVelocity = [0, 0, 0],
+		},
+		BoxCollider = 
+		{
+			bool Ghost = false,
+			bool SendsMessages = true,
+			bool Seamless = true,
+			string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+			string SerializedGroupName = "4e740859314e5515:DefaultGroup",
+			Vec3 Offset = [0, 0, 0],
+			Vec3 Size = [0.5, 0.5, 0.5],
+		},
+		Interactible = 
+		{
+			float InteractibleSizeScalar = 1.5,
+		},
+		Conversation = 
+		{
+			string HudLevel = "550d1a8d95bab18c:HUDConversations",
+		},
+		Hierarchy = 
+		{
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 57,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TalkAction = 
+				{
+					string TalkText = "Were going to have a character in a building somewhere. He will say: My name is Harry. My son is outside. Outside will be a punk  with green hair spraypainting a wall.",
+					int PlaceInConversation = 0,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 58,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TakeAction = 
+				{
+					string Arctype = "553ce2bad920d281:CardboardBox",
+					string TalkText = "Do you has cardboard box? I can has? plox?",
+					string RejectText = "Error, report to playtester: Item RejectionText not assigned; 'Eww, no, that is not what I wanted'",
+					int PlaceInConversation = 1,
+				},
+			},
+			Cog = 
+			{
+				LinkId = 
+				{
+					uint Id = 59,
+				},
+				Named = 
+				{
+					string Name = "Transform",
+				},
+				TalkAction = 
+				{
+					string TalkText = "This should be the last of the conversation actions.",
+					int PlaceInConversation = 3,
 				},
 			},
 		},
